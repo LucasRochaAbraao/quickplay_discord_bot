@@ -33,8 +33,9 @@ async def on_member_join(member):
     print(dir(member))
     await member.send('Mensagem de boas vindas privada.')
 
-@bot.command(name='info', help='informação sobre um membro.')
-async def info(ctx, member: discord.Member):
+@bot.command(name='perfil', help='Exibir um cartão (embed) com informações do usuário,\
+incluindo sua carteira virtual com moedas q-bits.')
+async def perfil(ctx, member: discord.Member):
     #print(dir(member))
     embed = discord.Embed(
         title=f"{member.name}", timestamp=datetime.datetime.utcnow(),
@@ -57,9 +58,90 @@ async def create_channel(ctx, channel_name='canal-sem-nome'):
         print(f'Criando o canal: {channel_name}')
         await guild.create_text_channel(channel_name)
 
-@bot.command(name='soma', help='escolha 2 números para serem somados.')
-async def add(ctx, a: int, b: int):
-    await ctx.send(a + b)
+@bot.command(name='comandos', help='Resumo dos comandos disponíveis.')
+async def comandos(ctx):
+    await ctx.send("comandos disponíveis:\n1 - \n2 - ")
+
+@bot.command(name='socorro', help='Enviar pergunta destacada para os Administradores.')
+async def socorro(ctx, mensagem):
+    await ctx.send(f"Admins, ele disse: {mensagem}")
+
+@bot.command(name='cor', help='Troca a cor do cartão (embed) do membro que tem\
+essa função liberada.')
+async def cor(ctx, cor_escolhida):
+    await ctx.send(f"Nova cor do cartão: {cor_escolhida}")
+
+@bot.command(name='piada', help='Com esse comando liberado, o membro pode\
+solicitar 3 piadas a cada 10 minutos.')
+async def piada(ctx):
+    await ctx.send("Alguma piada")
+
+@bot.command(name='conselho', help='Com esse comando liberado, o membro pode\
+solicitar 3 conselhos a cada 10 minutos.')
+async def conselho(ctx):
+    await ctx.send("Algum conselho")
+
+@bot.command(name='contar-piada', help='Com esse comando liberado, o membro\
+pode contar piadas ilimitada no canal aberto do servidor.')
+async def contar_piada(ctx, piada):
+    await ctx.send(piada)
+
+@bot.command(name='aconselhar', help='Com esse comando liberado, o membro\
+pode dar conselhos ilimitados no canal aberto do servidor.')
+async def aconselhar(ctx, **kwargs):
+    await ctx.send(kwags)
+
+@bot.command(name='quick-tech', help='Gasta 100 q-bits para liberar o canal\
+Quick-Tech, que contém conteúdo mensal sobre a internet, games e tecnologia.\
+Esse custo serve para separá-lo do canal aberto, promovendo bate papo mais\
+focado e sem spam.')
+async def quick_tech(ctx):
+    await ctx.send("Acesso liberado")
+
+@bot.command(name='registrar', help='Inicia o processo de se registrar em uma equipe.')
+async def registrar(ctx):
+    await ctx.send("Em qual equipe?")
+
+@bot.command(name='disregistrar', help='Remove sua inscrição de uma equipe.')
+async def disregistrar(ctx):
+    await ctx.send("De qual equipe?")
+
+@bot.command(name='rodada', help='Informação sobre as partidas da rodada atual.')
+async def rodada(ctx):
+    await ctx.send("Partidas:")
+
+@bot.command(name='equipe', help='Informação sobre sua equipe.')
+async def equipe(ctx):
+    await ctx.send("Cartão embed")
+
+@bot.command(name='resultado', help='Resumo dos resultados dessa equipe.')
+async def disregistrar(ctx, equipe):
+    await ctx.send(f"Resultados da equipe {equipe}")
+
+@bot.command(name='premio', help='Informação sobre a premiação.')
+async def premio(ctx):
+    await ctx.send("Regras de premiação:\n")
+
+@bot.command(name='ping', help='Consultar status de saúde do bot.')
+async def ping(ctx):
+    await ctx.send("Bot ok! :D")
+
+@bot.command(name='criar_equipe', help='Inicia o processo de criação de uma equipe.')
+async def criar_equipe(ctx, nome, url):
+    await ctx.send(f"Equipe {nome} criada com ícone personalizado.")
+
+@bot.command(name='placar', help='Inicia o processo de registro de placar.')
+async def placar(ctx, equipe_a, equipe_b):
+    await ctx.send(f"Equipe {equipe_a[0]}: {equipe_a[1]}\nEquipe {equipe_b[0]}: {equipe_b[1]}")
+
+@bot.command(name='nova_rodada', help='Inicia o processo de configuração\
+da próxima rodada.')
+async def nova_rodada(ctx):
+    await ctx.send("Primeira partida?")
+
+@bot.command(name='atribuir', help='Forma manual de atribuir q-bits ou troféis.')
+async def atribuir(ctx, ativo, membro):
+    await ctx.send(f"{ativo} entregue ao {membro.name}")
 
 @bot.command(name='ban', help='Banir <membro>. OBS: comando de permissão ADMIN.')
 async def ban(ctx, member : discord.Member = None, days = " ", reason = " "):
@@ -114,7 +196,7 @@ async def kick(ctx, *, member : discord.Member = None):
 
 #Mutes a Member From The server
 
-@bot.command(name='mute', help='Mutar <membro>. OBS: comando de permissão ADMIN.')
+@bot.command(name='silenciar', help='Silenciar <membro>. OBS: comando de permissão ADMIN.')
 async def mute(ctx, *, member : discord.Member):
     '''Mutes A Memeber'''
     user_roles = [r.name.lower() for r in ctx.message.author.roles]
@@ -127,11 +209,11 @@ async def mute(ctx, *, member : discord.Member):
     overwrite.send_messages = False
     await bot.edit_channel_permissions(ctx.message.channel, member, overwrite)
 
-    await bot.say(f"**{member.mention}** foi mutado! Aguarde até ser liberado...")
+    await bot.say(f"**{member.mention}** foi silenciado! Aguarde até ser liberado...")
 
 #Unmutes a member
 
-@bot.command(name='unmute', help='Tirar o mute de <membro>. OBS: comando de permissão ADMIN.')
+@bot.command(name='disilenciar', help='Tirar o silencio de <membro>. OBS: comando de permissão ADMIN.')
 async def unmute(ctx, *, member : discord.Member):
     '''Unmutes The Muted Memeber'''
     user_roles = [r.name.lower() for r in ctx.message.author.roles]
@@ -144,7 +226,7 @@ async def unmute(ctx, *, member : discord.Member):
     overwrite.send_messages = True
     await bot.edit_channel_permissions(ctx.message.channel, member, overwrite)
 
-    await bot.say(f"**{member.mention}** Pronto... Foi retirado seu mute!")
+    await bot.say(f"**{member.mention}** Pronto... Foi retirado do silêncio!")
 
 
 bot.run(TOKEN)

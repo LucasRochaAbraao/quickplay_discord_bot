@@ -1,5 +1,5 @@
 DISCORD
-### Guild / Server
+### Canais do Server
 -> Canal Aberto - Canal onde usuários podem bater papo livremente, sem fazer
 parte do campeonato ou de uma equipe. Aqui podem interagir durante qualquer
 momento, mesmo sem estar ocorrendo um campeonato. Serve para perguntas e
@@ -7,8 +7,13 @@ sugestões pertinentes ao Quick Games. Para suporte técnico em geral, digite
 o comando !suporte que o bot vai responder com os canais oficias de suporte
 técnico da empresa.
 
--> Anúncios - Canal onde apenas os Administradores enviam mensagem, e qualquer
-um pode ler para acompanhar o que há de novidade no Quick Games.
+-> Informação: regras, anúncios, etc - Canal onde apenas os Administradores
+enviam mensagem, e qualquer um pode ler para acompanhar o que há de novidade
+no Quick Games. Ao entrar no canal, as regras são destacadas.
+
+-> quick-tech: canal para bate-papo sobre e compartilhar tecnologias atuais.
+Promover conteúdo digital, sem poluir o canal aberto. Requer um comprometimento
+mínimo para esse canal ser liberado, para evitar bagunça (regra abaixo).
 
 -> Torneios_anteriores - Canal onde pode-se consultar resultados de torneios
 anteriores.
@@ -16,64 +21,144 @@ anteriores.
 -> Torneio_atual - Canal para acompanhar o torneio que está em andamento,
 inclusive nas semanas antes para que as equipes se preparem.
 
-->
+-> Mods - Canal exclusivo para administração do Servidor.
 
-### comandos de players dentro de um canal de torneio:
-!comandos - resumo dos comandos disponíveis
+-> mute/kick automático - O bot fica escutando e analisando as interações de
+cada usuário. Apartir de 3 infrações em 5 minutos, o usuário leva um mute e
+repreensão verbal (texto). Caso comita a mesma infração novamente, toma um
+kick (e reseta a pontuação de moedas).
 
-!registrar - Inicia o processo de registrar a equipe
-    O bot vai responder diretamente pra pessoa que perguntou. Dentro desse
-processo, ele escuta apenas quem enviou o comando, mesmo se outros enviarem
-mensagens simultaneamente.
+-> ban - Se o usuário tomar 3 kicks e voltar novamente pro servidor, será
+avisado que na próxima infração será banido, precisando de permissão manual
+dos administradores para voltar ao servidor.
 
-!disregistrar - Remove sua inscrição e de sua equipe
-    O bot vai responder diretamente pra pessoa que perguntou. Dentro desse
-processo, ele escuta apenas quem enviou o comando, mesmo se outros enviarem
-mensagens simultaneamente.
+### sistema de moedas | quoin, q-bits,
+# Premiação 
+-> Comando para visualizar o ranking mundial (do server)
+    !ranking -> top 5
 
-!rodada - Fala qual a próxima rodada do campeonato, e quanto tempo falta
-    Basta digitar o comando que haverá um resumo das partidas.
+-> Para promover interação, todos membros que enviarem ao menos 1 mensagem no
+dia recebem uma moeda. 
+    + 10 q-bits por no mínimo uma mensagem de texto no servidor, por dia.
 
-!equipe - Informação sobre sua equipe
-    Ao enviar esse comando, o bot responde com informações pertinentes à
-equipe do usuário (ou informa que não participa de nenhuma equipe). Informações
-como: participantes, resultado de partidas, ...
+-> Premiação de torneios. Cada torneio terá um sistema de premiação único,
+seguindo aproximadamente o padrão:
+     +20 q-bits por participação em torneio Quick Play
+     +20 q-bits máximo por contribuição individual em partida de torneio
+     +50 q-bits por vitória em uma partida de torneio Quick Play
+    +250 q-bits por finalizar na 3º/4º colocação (semi-finalista) em torneio
+    +500 q-bits por finalizar na 2º colocação (vice) em torneio
+    +750 q-bits por ser campeão em torneio Quick Play
+       +1 troféu para campeões exibirem em seus perfis de membro no servidor.
 
-!resultado <equipe> - Resumo dos resultados dessa equipe.
-    Ao enviar esse comando com o nome de uma equipe, o bot vai responder
-com um resumo dos resultados das partidas dessa equipe. Dessa forma, é
-possível acompanhar o desempenho de seus adversários.
+# Custos
+-> Desbloqueado para membros com quantidade mínima de moedas adquiridas,
+independente de quanto já gastou:
+Mínimo de 100 q-bits adquiridos:
+    -100 q-bits: Comando !quick-tech gasta 100 q-bits para entrar no canal
+    quick-tech. Conteúdo mensal sobre a internet, games e tecnologia.
+    -200 q-bits: Para obter cartão (embed) diferenciado (comando !perfil).
+Mínimo de 500 q-bits adquiridos:
+    -200 q-bits: Personalizar a cor do cartão (embed) com o comando !cor <cor>.
+    -500 q-bits: Libera os comandos !piada e !conselho.
+    -50 q-bits: Recebe uma piada ou conselho (após ter liberado o comando).
+Mínimo de 1000 q-bits adquiridos:
+    -750 q-bits: Libera os comandos !contar_piada e !aconselhar, que permite
+    contar quantas piadas ilimitadamente (sem spam). Apenas após liberar os
+    comandos !piada e !conselho.
+Mínimo de 2000 q-bits adquiridos:
+    -1000 q-bits: Libera o canal "Game Night". 1 dia por mês vamos fazer uma live
+    jogando "among us" ou "fallguys", e o membro pode participar. Critério de
+    desempate será a colocação mensal do membro (quem tiver obtido mais q-bits no
+    último mês).
 
-!premio - Informação sobre a premiação
-    Durante e antes do torneio, esse comando indicará o valor da premiação.
-Ao finalizar o torneio, esse comando indicará quem foram os vencedores, e suas
-premiações. Possivelmente, durante tempos que não estiver rolando torneio,
-esse comando pode disponibilizar resultado e premiação de torneios anteriores.
+### Resumo de comandos disponíveis
+# Qualquer canal do servidor
+!comandos | !help -> resumo dos comandos disponíveis
 
 !socorro <mensagem> - Enviar pergunta destacada para os Administradores
     Ao enviar esse comando seguido de uma pergunta, ela será destacada para os
 administradores. 
 
-comandos admin:
+!perfil -> Exibir um cartão (embed) com informações do usuário, incluindo
+sua carteira virtual com moedas q-bits.
+
+!cor <cor> -> Troca a cor do cartão (embed) do membro que tem essa função
+liberada.
+
+!piada -> Com esse comando liberado, o membro pode solicitar 3 piadas a cada
+10 minutos.
+
+!conselho -> Com esse comando liberado, o membro pode solicitar 3 conselhos a
+cada 10 minutos.
+
+!contar_piada -> Com esse comando liberado, o membro pode contar piadas
+ilimitadas no canal aberto do servidor.
+
+!aconselhar -> Com esse comando liberado, o membro pode dar conselhos
+ilimitados no canal aberto do servidor.
+
+!quick-tech -> Gasta 100 q-bits para liberar o canal Quick-Tech, que contém
+conteúdo mensal sobre a internet, games e tecnologia. Esse custo serve para
+separá-lo do canal aberto, promovendo bate papo mais focado e sem spam.
+
+# comandos de players dentro de um canal de torneio:
+!registrar -> Inicia o processo de se registrar em uma equipe
+    O bot vai responder diretamente pra pessoa que perguntou. Dentro desse
+processo, ele escuta apenas quem enviou o comando, mesmo se outros enviarem
+mensagens simultaneamente. Os Admins criam as equipes para os membros se
+registrarem, com uma senha para evitar que entrem em equipes erradas.
+
+!disregistrar -> Remove sua inscrição de uma equipe
+    O bot vai responder diretamente pra pessoa que perguntou. Dentro desse
+processo, ele escuta apenas quem enviou o comando, mesmo se outros enviarem
+mensagens simultaneamente.
+
+!rodada -> Informação sobre as partidas da rodada atual.
+    Basta digitar o comando que haverá um resumo das partidas.
+
+!equipe -> Informação sobre sua equipe
+    Ao enviar esse comando, o bot responde com informações pertinentes à
+equipe do usuário (ou informa que não participa de nenhuma equipe). Informações
+como: players, resultado de partidas, partida atual...
+
+!resultado <equipe> -> Resumo dos resultados dessa equipe.
+    Ao enviar esse comando com o nome de uma equipe, o bot vai responder
+com um resumo dos resultados das partidas dessa equipe. Dessa forma, é
+possível acompanhar o desempenho de seus adversários.
+
+!premio -> Informação sobre a premiação
+    Durante e antes do torneio, esse comando indicará o valor da premiação.
+Ao finalizar o torneio, esse comando indicará quem foram os vencedores, e suas
+premiações. Possivelmente, durante tempos que não estiver rolando torneio,
+esse comando pode disponibilizar resultado e premiação de torneios anteriores.
+
+# comandos admin
 (mesmos que de players + ...)
-!criar_equipe <nome_da_equipe> - Inicia o processo de criação de uma equipe
-    É possível adicionar uma imagem como logo.
+!ping -> O bot responde com status sobre ele mesmo. Esse comando serve para
+verificar se está tudo ok com o bot.
 
-!placar <equipe_a> <equipe_b> - Inicia o processo de registro de placar
+!criar_equipe <nome_da_equipe> -> Inicia o processo de criação de uma equipe
+    O bot vai perguntar o nome da equipe e uma possível imagem, que pode ser
+    adicionada passando um url.
+
+!placar <equipe_a> <equipe_b> -> Inicia o processo de registro de placar
     O bot pergunta qual foi o resultado da partida, depois pergunta específica
-por player de cada equipe.
+por player de cada equipe. Importante para atribuição de pontuação e q-bits
 
-!ban <player> - Se necessário, banir um jogador do server.
-
-!nova_rodada - Inicia o processo de configuração da próxima rodada
+!nova_rodada -> Inicia o processo de configuração da próxima rodada
     O bot vai ouvir apenas o administrador, fazendo algumas perguntas para
 montar a próxima rodada. Vai perguntar qual são as equipes para cada partida.
 
-!silenciar <membro> - Silenciar um jogador
+!atribuir <ativo> <membro> -> Forma manual de atribuir q-bits ou troféis. Útil
+para premiar vencedores de campeonatos antigos, etc.
+
+!ban <player> - Se necessário, banir um jogador do server.
+
+!silenciar <membro> <temmpo> -> Silenciar um jogador
     Para não virar bagunça, é possível silenciar um membro por x tempo. Também
 é possível programar o bot para silenciar automaticamente se ele identificar
-característica de spam.
-
+característica de spam ou outra infração.
 
 
 
