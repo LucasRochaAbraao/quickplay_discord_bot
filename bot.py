@@ -9,12 +9,13 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 intents = discord.Intents.default()
 intents.members = True
-bot = commands.Bot(command_prefix=('!', '$'), description="teste", intents=intents)
+bot = commands.Bot(command_prefix=('!', '$'), description="teste", intents=intents, case_insensitive=True)
 
 @bot.event
 async def on_ready():
     #print(f'{bot.user.name} se conectou ao servidor {dir(bot.user)}!')
     print(f'{bot.user.name}:{bot.user.id} se conectou ao servidor!')
+    return await bot.change_presence(activity=discord.Activity(type=1, name='Quick Play', url='https://www.youtube.com/channel/UCNaWl0HNSmDk4fO8NQBii4Q'))
 
 @bot.event
 async def on_command_error(ctx, error):
