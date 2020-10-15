@@ -160,6 +160,17 @@ para premiar vencedores de campeonatos antigos, etc.
 é possível programar o bot para silenciar automaticamente se ele identificar
 característica de spam ou outra infração.
 
+### DATABASE
+# tabela: evento
+indice:
+jogo:
+data_inicial:
+data_encerramento:
+equipes:
+jogadores:
+ranking:
+
+# tabela: membro_discord
 
 
 

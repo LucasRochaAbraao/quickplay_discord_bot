@@ -25,6 +25,7 @@ async def on_command_error(ctx, error):
 @bot.event
 async def on_message_delete(msg):
     ''' Mensagem no canal ao detectar uma mensagem deletada.'''
+    print("peguei")
     await msg.channel.send('Deus leu o que você apagou!')
 
 @bot.event
@@ -35,15 +36,14 @@ async def on_member_join(member):
 
 @bot.command(name='perfil', help='Exibir um cartão (embed) com informações do usuário,\
 incluindo sua carteira virtual com moedas q-bits.')
-async def perfil(ctx, member: discord.Member):
-    #print(dir(member))
+async def perfil(ctx):
     embed = discord.Embed(
-        title=f"{member.name}", timestamp=datetime.datetime.utcnow(),
+        title=f"{ctx.author.name}", timestamp=datetime.datetime.utcnow(),
         color=discord.Color.orange()
     )
-    embed.add_field(name="Membro desde:", value=f"{member.joined_at}")
-    embed.add_field(name="ID:", value=f"{member.id}")
-    embed.set_thumbnail(url=f"{member.avatar_url}")
+    embed.add_field(name="Membro desde:", value=f"{ctx.author.joined_at}")
+    embed.add_field(name="ID:", value=f"{ctx.author.id}")
+    embed.set_thumbnail(url=f"{ctx.author.avatar_url}")
     #embed.set_thumbnail(url="https://pluralsight.imgix.net/paths/python-7be70baaac.png")
     #embed.set_image(url=f'{member.avatar_url}')
     embed.set_footer(text="QUICK GAMES", icon_url="https://is4-ssl.mzstatic.com/image/thumb/Purple113/v4/48/cd/fc/48cdfc22-cce0-9231-dfd9-2cc8c5661940/source/512x512bb.jpg")
@@ -140,7 +140,7 @@ async def nova_rodada(ctx):
     await ctx.send("Primeira partida?")
 
 @bot.command(name='atribuir', help='Forma manual de atribuir q-bits ou troféis.')
-async def atribuir(ctx, ativo, membro):
+async def atribuir(ctx, ativo, membro: discord.Member):
     await ctx.send(f"{ativo} entregue ao {membro.name}")
 
 @bot.command(name='ban', help='Banir <membro>. OBS: comando de permissão ADMIN.')
