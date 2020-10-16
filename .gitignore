@@ -1,5 +1,5 @@
 __pycache__/
 venv/
 .env
-quickplay.db
-quickplay.db-journal
+quickplay_sqlite.db
+quickplay_sqlite.db-journal
