@@ -1,4 +1,5 @@
 import os
+import json
 import datetime
 import discord
 from discord.ext import commands
@@ -14,7 +15,8 @@ bot = commands.Bot(command_prefix=('!', '$'), description="teste", intents=inten
 @bot.event
 async def on_ready():
     #print(f'{bot.user.name} se conectou ao servidor {dir(bot.user)}!')
-    print(f'{bot.user.name}:{bot.user.id} se conectou ao servidor!')
+    #print(f'{bot.user.name}:{bot.user.id} se conectou ao servidor!')
+    print(f'{bot.user.name} se conectou ao servidor!')
     return await bot.change_presence(activity=discord.Activity(type=1, name='Quick Play', url='https://www.youtube.com/channel/UCNaWl0HNSmDk4fO8NQBii4Q'))
 
 @bot.event
@@ -32,8 +34,9 @@ async def on_message_delete(msg):
 async def on_member_join(member):
     ''' Mensagem de boas vindas privada.'''
     print(dir(member))
-    await member.send('Mensagem de boas vindas privada.')
+    await member.send('Olá! Seja bem vindo ao servidor discord Quick Play! Fique atento para instruções no processo de inscrição do primeiro campeonato Quick Play de LOL!')
 
+"""
 @bot.command(name='perfil', help='Exibir um cartão (embed) com informações do usuário,\
 incluindo sua carteira virtual com moedas q-bits.')
 async def perfil(ctx):
@@ -48,15 +51,27 @@ async def perfil(ctx):
     #embed.set_image(url=f'{member.avatar_url}')
     embed.set_footer(text="QUICK GAMES", icon_url="https://is4-ssl.mzstatic.com/image/thumb/Purple113/v4/48/cd/fc/48cdfc22-cce0-9231-dfd9-2cc8c5661940/source/512x512bb.jpg")
     await ctx.send(embed=embed)
+"""
 
 @bot.command(name='criar-canal', help='criar canal com nome personalizado.')
-@commands.has_role('admin')
+@commands.has_role('Admin')
 async def create_channel(ctx, channel_name='canal-sem-nome'):
-    guild = ctx.guild
-    existing_channel = discord.utils.get(guild.channels, name=channel_name)
+    existing_channel = discord.utils.get(ctx.guild.channels, name=channel_name)
     if not existing_channel:
-        print(f'Criando o canal: {channel_name}')
-        await guild.create_text_channel(channel_name)
+        print(f'Criando o canal "{channel_name}".')
+        await ctx.guild.create_text_channel(name=channel_name)
+
+@bot.command(name='deletar-canal', help='deleta o canal especificado')
+@commands.has_role('Admin')
+async def delete_channel(ctx, channel_name):
+   # check if the channel exists
+   existing_channel = discord.utils.get(ctx.guild.channels, name=channel_name)
+   # if the channel exists
+   if existing_channel is not None:
+      await existing_channel.delete()
+   # if the channel does not exist, inform the user
+   else:
+      await ctx.send(f'Nenhum canal "{channel_name}" foi encontrado')
 
 @bot.command(name='comandos', help='Resumo dos comandos disponíveis.')
 async def comandos(ctx):
@@ -66,6 +81,7 @@ async def comandos(ctx):
 async def socorro(ctx, mensagem):
     await ctx.send(f"Admins, ele disse: {mensagem}")
 
+"""
 @bot.command(name='cor', help='Troca a cor do cartão (embed) do membro que tem\
 essa função liberada.')
 async def cor(ctx, cor_escolhida):
@@ -97,11 +113,71 @@ Esse custo serve para separá-lo do canal aberto, promovendo bate papo mais\
 focado e sem spam.')
 async def quick_tech(ctx):
     await ctx.send("Acesso liberado")
+"""
 
-@bot.command(name='registrar', help='Inicia o processo de se registrar em uma equipe.')
+@bot.command(name='registrar', help='Inicia o processo de se registrar\
+em uma equipe.')
 async def registrar(ctx):
-    await ctx.send("Em qual equipe?")
+    await ctx.send(f"Beleza {ctx.author.name}, vou te chamar no dm!")
+    await ctx.author.send(f'Fala {ctx.author.name}, bora registrar sua equipe!\n\
+\n\
+Preciso que me envie a informação de cada jogador no seguinte formato:\n\
+!registrar_integrante "equipe" "nome real" "nickname" "data de nascimento" \
+"endereço" "email" "telefone de contato"\n\
+\n\
+Por exemplo: "!registrar_player "equipe" "Quick Fibra" "QuickPlay" \
+"01/01/1998" "Rua Almirante Adalberto de barros Nunes 629, Vila Mury, VR, RJ" \
+"suporte@quick.com.br" "(24) 3512 3312"')
+# nome real
+# nickname
+# data de nascimento
+# endereço
+# email
+# telefone de contato
 
+@bot.command(name='registrar_integrante', help='Inscriçao de cada integrante da equipe.')
+async def registrar_integrante(ctx, equipe, nome, nickname, dob, address, email, telefone):
+    if isinstance(ctx.channel, discord.channel.DMChannel):
+        print(f"Equipe: {equipe}\nNome: {nome}\nNickname: {nickname}\n\
+Data de nascimento: {dob}\nEndereço: {address}\nEmail: {email}\nTelefone: {telefone}")
+        # json
+        data = {equipe:{
+            "nome completo": nome,
+            "nickname": nickname,
+            "data de nascimento": dob,
+            "endereço": address,
+            "email": email,
+            "telefone": telefone
+        }}
+        print("criando arquivo json")
+        with open(f"equipes/equipe_{equipe}_{nickname}.json", "w") as equipe_db:
+            json.dump(data, equipe_db)
+        print("pronto")
+
+        await ctx.send("Jogador registrado!\nObs: para verificar os integrantes\
+da sua equipe, use o comando: !minha_equipe.\nFaça a inscrição também no Battlefy: <link>")
+    else:
+        await ctx.send("Este comando funciona apenas no DM!")
+
+"""
+@bot.command(name='minha_equipe', help='Inscriçao de cada integrante da equipe.')
+async def minha_equipe(ctx):
+    if isinstance(ctx.channel, discord.channel.DMChannel):
+        await ctx.send(f"Info da equipe:\n-")
+"""
+
+@bot.command(name='deletar_msg', no_pm=True)
+@commands.has_role('Admin')
+async def deletar_msg(ctx, amount=None):
+    if amount is None:
+        await ctx.channel.purge(limit=5)
+    elif amount == "todas":
+        await ctx.channel.purge()
+    else:
+        await ctx.channel.purge(limit=int(amount))
+
+
+"""
 @bot.command(name='disregistrar', help='Remove sua inscrição de uma equipe.')
 async def disregistrar(ctx):
     await ctx.send("De qual equipe?")
@@ -125,10 +201,6 @@ async def premio(ctx):
 @bot.command(name='ping', help='Consultar status de saúde do bot.')
 async def ping(ctx):
     await ctx.send("Bot ok! :D")
-
-@bot.command(name='criar_equipe', help='Inicia o processo de criação de uma equipe.')
-async def criar_equipe(ctx, nome, url):
-    await ctx.send(f"Equipe {nome} criada com ícone personalizado.")
 
 @bot.command(name='placar', help='Inicia o processo de registro de placar.')
 async def placar(ctx, equipe_a, equipe_b):
@@ -227,6 +299,6 @@ async def unmute(ctx, *, member : discord.Member):
     await bot.edit_channel_permissions(ctx.message.channel, member, overwrite)
 
     await bot.say(f"**{member.mention}** Pronto... Foi retirado do silêncio!")
-
+"""
 
 bot.run(TOKEN)
