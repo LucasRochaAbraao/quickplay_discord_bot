@@ -5,3 +5,4 @@ quickplay_sqlite.db
 quickplay_sqlite.db-journal
 resources/banco/*
 !resources/.gitkeep
+manage_db.py
