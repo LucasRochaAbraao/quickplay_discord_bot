@@ -4,21 +4,18 @@ import random
 import datetime
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+#load_dotenv()
+#TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.environ["DISCORD_TOKEN"]
 
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=('!', '$'), description="QuickPlay Bot", intents=intents, case_insensitive=True)
 bot.remove_command("help") # eu faço um melhor abaixo
 
-with open("resources/regras.txt", "r") as arq:
-    regras_txt = arq.readlines()
 
-with open("resources/palavras_filtradas.txt", "r") as arq:
-    palavras_filtradas = arq.readlines()
 
 meme_imgs = [
     'https://img_a.jpg',
@@ -29,8 +26,14 @@ meme_imgs = [
 @bot.group(invoke_without_command=True)
 async def ajuda(ctx):
     emb = discord.Embed(title = "Ajuda", description = "Use !ajuda <comando> para mais informações sobre algum comando específico.", color = ctx.author.color)
-    emb.add_field(name = "Membros", value = "regras|regra, info")
+    emb.add_field(name = "Membros", value = "regras|regra, info, saldo, brinde, enviar_qbits")
     emb.add_field(name = "Admin", value = "limpar, kick, ban")
+    await ctx.send(embed = emb)
+
+@ajuda.command()
+async def info(ctx):
+    emb = discord.Embed(title = "Info", description = "Mostra informações de um membro", color = ctx.author.color)
+    emb.add_field(name = "**sintaxe**", value = "!info <membro>")
     await ctx.send(embed = emb)
 
 @ajuda.command()
@@ -43,12 +46,6 @@ async def regras(ctx):
 async def regra(ctx):
     emb = discord.Embed(title = "Regras", description = "Mostra a regra solicitada.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!regra <nº da regra>")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def info(ctx):
-    emb = discord.Embed(title = "Info", description = "Mostra informações de um membro", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!info <membro>")
     await ctx.send(embed = emb)
 
 @ajuda.command()
@@ -69,6 +66,17 @@ async def ban(ctx):
     emb.add_field(name = "**sintaxe**", value = "!ban <membro> [razão]")
     await ctx.send(embed = emb)
 
+@ajuda.command()
+async def saldo(ctx):
+    emb = discord.Embed(title = "Saldo", description = "Consultar saldo de qBits de um usuário", color = ctx.author.color)
+    emb.add_field(name = "**sintaxe**", value = "!saldo [membro]")
+    await ctx.send(embed = emb)
+
+@ajuda.command()
+async def brinde(ctx):
+    emb = discord.Embed(title = "Brinde", description = "Solicitar um brinde de qBits", color = ctx.author.color)
+    emb.add_field(name = "**sintaxe**", value = "!saldo [membro]")
+    await ctx.send(embed = emb)
 
 @bot.event
 async def on_ready():
@@ -93,6 +101,9 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_message(msg):
+    with open("resources/palavras_filtradas.txt", "r") as arq:
+        palavras_filtradas = arq.readlines()
+    
     for word in palavras_filtradas:
         if word in msg.content:
             await msg.delete()
@@ -111,27 +122,7 @@ async def on_member_join(member):
     #print(dir(member))
     await member.send('Olá! Seja bem vindo ao servidor discord Quick Play!')# Fique atento para instruções no processo de inscrição do primeiro campeonato Quick Play de LOL!')
 
-
-@bot.command(name='limpar', aliases=["clear"], no_pm=True)
-#@commands.has_permissions(manage_messages = True)
-@commands.has_role('Admin')
-async def limpar(ctx, amount=None):
-    if amount is None:
-        await ctx.channel.purge(limit=6)
-    elif amount == "todas":
-        await ctx.channel.purge()
-    else:
-        await ctx.channel.purge(limit=int(amount)+1)
 # =============================== COMANDOS COMUNS =============================== #
-
-@bot.command()
-async def regra(ctx, *, num):
-    await ctx.send(regras_txt[int(num)-1])
-
-@bot.command()
-async def regras(ctx):
-    for reg in regras_txt:
-        await ctx.send(reg)
 
 @bot.command(aliases=["usuario", "perfil"], help='Exibir um cartão (embed) com \
 informações do usuário, incluindo sua carteira virtual com moedas q-bits.')
@@ -156,7 +147,35 @@ async def info(ctx, member: discord.Member = None):
     emb.set_footer(text="QUICK PLAY", icon_url="http://www.quick.com.br//images/logo-quick.png")
     await ctx.send(embed=emb)
 
+@bot.command()
+async def regra(ctx, *, num):
+    regras_txt = get_regras()
+    await ctx.send(regras_txt[int(num)-1])
+
+@bot.command()
+async def regras(ctx):
+    regras_txt = get_regras()
+    for reg in regras_txt:
+        await ctx.send(reg)
+
+# ----- funções internas ----- #
+def get_regras():
+    with open("resources/regras.txt", "r") as arq:
+        regras_txt = arq.readlines()
+    return regras_txt
+
 # =============================== COMANDOS ADMIN ================================ #
+
+@bot.command(name='limpar', aliases=["clear"], no_pm=True)
+#@commands.has_permissions(manage_messages = True)
+@commands.has_role('Admin')
+async def limpar(ctx, amount=None):
+    if amount is None:
+        await ctx.channel.purge(limit=6)
+    elif amount == "todas":
+        await ctx.channel.purge()
+    else:
+        await ctx.channel.purge(limit=int(amount)+1)
 
 @bot.command(aliases=["retirar"])
 @commands.has_permissions(kick_members = True)
@@ -270,7 +289,6 @@ async def open_account(client):
     if str(client.id) in clients:
         return False # não precisa criar carteiras novas, já é cliente
     else:
-        #clients[str(client.id)] = {"carteira": 0, "banco": 0}
         clients[str(client.id)] = {}
         clients[str(client.id)]["carteira"] = 0
         clients[str(client.id)]["banco"] = 0
