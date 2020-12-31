@@ -255,7 +255,7 @@ async def depositar(ctx, member: discord.Member = None, amount = None):
     if amount == None:
         await ctx.send("Por favor, selecione uma quantia.")
         return
-    print(f"3rd>member: {member}, amount: {amount]")
+    print(f"3rd>member: {member}, amount: {amount}")
     pesquisa = collection.find_one({"_id": sujeito.id})
     if pesquisa:
         collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": amount}})
