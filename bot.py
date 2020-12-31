@@ -207,7 +207,7 @@ async def brinde(ctx, member: discord.Member = None):
     pesquisa = collection.find_one({"_id": sujeito.id})
     if pesquisa:
         collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": ganhos}})
-    await ctx.send(f"{sujeito.name} recebeu {ganhos} qBits!")
+    await ctx.send(f"@{sujeito.name} recebeu {ganhos} qBits!")
 
 @bot.command()
 @commands.has_role('Admin')
@@ -224,17 +224,17 @@ async def retirar_qbits(ctx, member: discord.Member = None, amount = None): # ch
     pesquisa = collection.find_one({"_id": sujeito.id})
     if pesquisa:
         if amount > pesquisa["qbits"]:
-            await ctx.send(f"{sujeito.name} tem menos do que isso!")
+            await ctx.send(f"@{sujeito.name} tem menos do que isso!")
             return
         if amount < 0:
             await ctx.send("Quantia precisa ser positiva!")
             return
         collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": -amount}})
-        await ctx.send(f"Você retirou {amount} qBits de {sujeito.name}!")
+        await ctx.send(f"Você retirou {amount} qBits de @{sujeito.name}!")
         return
     
     collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": 25})
-    await ctx.send(f"{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
+    await ctx.send(f"@{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
 
 @bot.command()
 @commands.has_role('Admin')
@@ -253,11 +253,11 @@ async def depositar(ctx, member: discord.Member = None, amount: int = None):
     pesquisa = collection.find_one({"_id": sujeito.id})
     if pesquisa:
         collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": amount}})
-        await ctx.send(f"Você depositou {amount} qBits para {sujeito.name}!")
+        await ctx.send(f"Você depositou {amount} qBits para @{sujeito.name}!")
         return
     
     collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": 25})
-    await ctx.send(f"{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
+    await ctx.send(f"@{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
 
 @bot.command()
 async def enviar_qbits(ctx, membro: discord.Member, amount = None):
@@ -278,7 +278,7 @@ async def enviar_qbits(ctx, membro: discord.Member, amount = None):
     
     collection.update_one({"_id": ctx.author.id}, {"$inc": {"qbits": -amount}})
     collection.update_one({"_id": membro.id}, {"$inc": {"qbits": amount}})
-    await ctx.send(f"{ctx.author.name} enviou {amount} qBits para {membro.name}!")
+    await ctx.send(f"@{ctx.author.name} enviou {amount} qBits para @{membro.name}!")
 
 # ----- funções internas ----- #
 
