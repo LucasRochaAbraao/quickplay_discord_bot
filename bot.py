@@ -243,12 +243,13 @@ async def retirar_qbits(ctx, member: discord.Member = None, amount = None): # ch
 @commands.has_role('Admin')
 async def depositar(ctx, member: discord.Member = None, amount = None):
     try:
-        if member.id != ctx.author.id:
-            sujeito = member
+        if int(member):
+            amount = int(member) # cambalaio para permitir: !depositar 100 (para usuário solicitando)
+            sujeito = ctx.author
     except:
-        sujeito = ctx.author
-        amount = member # cambalaio para permitir: !depositar 100 (para usuário solicitando)
-    amount = int(amount)
+        sujeito = member
+    if amount:
+        int(amount)
     if amount < 1:
         await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
         return
