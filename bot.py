@@ -241,19 +241,20 @@ async def retirar_qbits(ctx, member: discord.Member = None, amount = None): # ch
 
 @bot.command()
 @commands.has_role('Admin')
-async def depositar(ctx, member: discord.Member = None, amount: int = None):
-    if amount == None:
-        await ctx.send("Por favor, selecione uma quantia.")
-        return
-    if amount < 1:
-        await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
-        return
-    if isinstance(member, discord.Member):
+async def depositar(ctx, member: discord.Member = None, amount = None):
+    if member.id != ctx.author.id:
         sujeito = member
     else:
         sujeito = ctx.author
         amount = member # cambalaio para permitir: !depositar 100 (para usuário solicitando)
-
+    amount = int(amount)
+    if amount < 1:
+        await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
+        return
+    if amount == None:
+        await ctx.send("Por favor, selecione uma quantia.")
+        return
+    
     pesquisa = collection.find_one({"_id": sujeito.id})
     if pesquisa:
         collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": amount}})
