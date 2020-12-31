@@ -82,6 +82,8 @@ async def brinde(ctx):
     emb.add_field(name = "**sintaxe**", value = "!saldo [membro]")
     await ctx.send(embed = emb)
 
+# =================================== EVENTS =================================== #
+
 @bot.event
 async def on_ready():
     #print(f'{bot.user.name} se conectou ao servidor {dir(bot.user)}!')
@@ -105,12 +107,9 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_message(msg):
-    with open("resources/palavras_filtradas.txt", "r") as arq:
-        palavras_filtradas = arq.readlines()
-    
-    for word in palavras_filtradas:
-        if word in msg.content:
-            await msg.delete()
+    await filtrar_palavras(msg)
+    await processar_xp(msg)
+
     await bot.process_commands(msg)
 
 @bot.event
@@ -125,6 +124,22 @@ async def on_member_join(member):
     ''' Mensagem de boas vindas privada.'''
     #print(dir(member))
     await member.send('Olá! Seja bem vindo ao servidor discord Quick Play!')# Fique atento para instruções no processo de inscrição do primeiro campeonato Quick Play de LOL!')
+
+# ==== helper funcions ==== #
+async def filtrar_palavras(msg):
+    with open("resources/palavras_filtradas.txt", "r") as arq:
+        palavras_filtradas = arq.readlines()
+        for word in palavras_filtradas:
+            if word in msg.content:
+                await msg.delete()
+
+async def processar_xp(msg):
+    sujeito = msg.author
+    pesquisa = collection.find_one({"_id": sujeito.id})
+    if pesquisa:
+        collection.update_one({"_id": sujeito.id}, {"$inc": {"xp": random.randrange(3, 5)}})
+    else:
+        collection.insert_one({"_id": sujeito.id, "username": sujeito.name, "xp": 0, "qbits": 25})
 
 # =============================== COMANDOS COMUNS =============================== #
 
