@@ -146,7 +146,7 @@ async def info(ctx, member: discord.Member = None):
 
     emb.add_field(name = "Membro desde", value = f"{sujeito.joined_at.strftime('%d-%m-%y')}")
     #emb.add_field(name = "ID", value = member.id, inline = False)
-    emb.add_field(name = "qBits", value = saldo_qbits(sujeito))
+    emb.add_field(name = "qBits", value = await saldo_qbits(sujeito))
     emb.set_thumbnail(url = sujeito.avatar_url)
     emb.set_footer(text="QUICK PLAY", icon_url="http://www.quick.com.br//images/logo-quick.png")
     await ctx.send(embed=emb)
