@@ -275,8 +275,8 @@ async def enviar_qbits(ctx, membro: discord.Member, amount = None):
         await ctx.send(f"Você não tem saldo suficiente para enviar {amount} qbits!")
         return
     
-    collection.update_one({"_id": remetente.id}, {"$inc": {"qbits": -amount}})
-    collection.update_one({"_id": destinatario.id}, {"$inc": {"qbits": amount}})
+    collection.update_one({"_id": ctx.author.id}, {"$inc": {"qbits": -amount}})
+    collection.update_one({"_id": membro.id}, {"$inc": {"qbits": amount}})
     await ctx.send(f"{ctx.author.name} enviou {amount} qBits para {membro.name}!")
 
 # ----- funções internas ----- #
