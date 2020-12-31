@@ -8,7 +8,7 @@
 
 Nesse repositório vocẽ encontra informações de instalação, comandos do bot, além de ter acesso ao código fonte, que inclui uma licença open source pra copiar (desde que use a mesma licença no seu projeto)
 
-[//]: # <remove to left to remove comment> ![](../header.png)
+[//]: <remove to left to remove comment> ![](../header.png)
 
 ## Índice
 
@@ -71,13 +71,13 @@ Para sua aplicação executar automaticamente, habilite o "worker" no menu "Reso
 [python-image]: https://img.shields.io/static/v1?label=python&message=3.7&color=blue
 [python-url]: https://www.python.org/downloads/release/python-370/
 
-[discord-image]: https://img.shields.io/static/v1?label=discord.py&message=rewrite+&color=blue
+[discord-image]: https://img.shields.io/static/v1?label=discord.py&message=rewrite+&color=lightgrey
 [discord-url]: https://discord.com/developers/docs/intro
 
-[heroku-image]: https://img.shields.io/static/v1?label=heroku&message=app&color=blue
+[heroku-image]: https://img.shields.io/static/v1?label=heroku&message=app&color=red
 [heroku-url]: https://www.heroku.com/
 
-[mongodb-image]: https://img.shields.io/static/v1?label=mongodb&message=atlas&color=blue
+[mongodb-image]: https://img.shields.io/static/v1?label=mongodb&message=atlas&color=success
 [mongodb-url]: https://docs.mongodb.com/
 
 Distribuído sob a licença `GNU GENERAL PUBLIC LICENSE`. Veja `LICENSE` para mais informações.
