@@ -252,6 +252,7 @@ async def depositar(ctx, member: discord.Member = None, amount: int = None):
     if pesquisa:
         collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": amount}})
         await ctx.send(f"Você depositou {amount} qBits para {sujeito.id}!")
+        return
     
     collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": 25})
     await ctx.send(f"{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
