@@ -39,6 +39,7 @@ python3 -m venv venv
 source venv/bin/activate
 python -m pip install --upgrade pip
 ```
+Depois mais alguns passos para ligar o bot e fazer um deployment automático...
 
 >Clone o repo
 pip install requirements.txt
