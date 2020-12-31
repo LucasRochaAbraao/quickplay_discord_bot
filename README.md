@@ -9,11 +9,10 @@
 Nesse repositório vocẽ encontra informações de instalação, comandos do bot, além de ter acesso ao código fonte, que inclui uma licença open source pra copiar (desde que use a mesma licença no seu projeto)
 
 <remove me> ![](../header.png)
-
 ## Índice
 
-* [Comandos](#Comandos)
-* [Setup & Instalação](#Setup-&-Instalação)
+* [Comandos](#comandos)
+* [Setup & Instalação](#setup--instalação)
 
 ## Comandos  
 
