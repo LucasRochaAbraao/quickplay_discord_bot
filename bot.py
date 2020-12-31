@@ -207,7 +207,10 @@ async def brinde(ctx, member: discord.Member = None):
     pesquisa = collection.find_one({"_id": sujeito.id})
     if pesquisa:
         collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": ganhos}})
-    await ctx.send(f"@{sujeito.name} recebeu {ganhos} qBits!")
+        await ctx.send(f"@{sujeito.name} recebeu {ganhos} qBits!")
+    else:
+        collection.insert_one({"_id": sujeito.id, "username": sujeito.name, "xp": 0, "qbits": 25})
+        await ctx.send(f"@{sujeito.name} não tinha conta qBits. Criamos uma para ele, e agora ele tem {ganhos} qBits!")
 
 @bot.command()
 @commands.has_role('Admin')
@@ -233,7 +236,7 @@ async def retirar_qbits(ctx, member: discord.Member = None, amount = None): # ch
         await ctx.send(f"Você retirou {amount} qBits de @{sujeito.name}!")
         return
     
-    collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": 25})
+    collection.insert_one({"_id": sujeito.id, "username": sujeito.name, "xp": 0, "qbits": 25})
     await ctx.send(f"@{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
 
 @bot.command()
@@ -245,9 +248,8 @@ async def depositar(ctx, member: discord.Member = None, amount: int = None):
     if amount < 1:
         await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
         return
-    if member:
-        if isinstance(member, discord.Member):
-            sujeito = member
+    if isinstance(member, discord.Member):
+        sujeito = member
     else:
         sujeito = ctx.author
         amount = member # cambalaio para permitir: !depositar 100 (para usuário solicitando)
@@ -258,7 +260,7 @@ async def depositar(ctx, member: discord.Member = None, amount: int = None):
         await ctx.send(f"Você depositou {amount} qBits para @{sujeito.name}!")
         return
     
-    collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": amount})
+    collection.insert_one({"_id": sujeito.id, "username": sujeito.name, "xp": 0, "qbits": amount})
     await ctx.send(f"@{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com {amount} qbits!")
 
 @bot.command()
@@ -269,10 +271,10 @@ async def enviar_qbits(ctx, membro: discord.Member, amount = None):
         return
     remetente = collection.find_one({"_id": ctx.author.id})
     if remetente == None:
-        collection.insert_one({"_id": ctx.author.id}, {"$inc": {"qbits": amount}})
+        collection.insert_one({"_id": ctx.author.id, "username": ctx.author.name, "xp": 0, "qbits": amount})
     destinatario = collection.find_one({"_id": membro.id})
     if destinatario == None:
-        collection.insert_one({"_id": membro.id}, {"$inc": {"qbits": amount}})
+        collection.insert_one({"_id": membro.id, "username": membro.name, "xp": 0, "qbits": amount})
 
     if amount > remetente["qbits"]:
         await ctx.send(f"Você não tem saldo suficiente para enviar {amount} qbits!")
@@ -288,7 +290,7 @@ async def saldo_qbits_xp(membro: discord.Member, modo):
     pesquisa = collection.find_one({"_id": membro.id})
     if pesquisa: # caso o usuario exista, retorna o valor de qbits
         return pesquisa[modo]
-    collection.insert_one({"_id": membro.id, "xp": 0, "qbits": 25})
+    collection.insert_one({"_id": membro.id, "username": sujeito.name, "xp": 0, "qbits": 25})
     if modo == "xp":
         return 0
     else: # qbits padrão
