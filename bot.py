@@ -230,7 +230,8 @@ async def retirar_qbits(ctx, member: discord.Member = None, amount = None): # ch
             await ctx.send("Quantia precisa ser positiva!")
             return
         collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": -amount}})
-        await ctx.send(f"Você retirou {amount} qBits de {sujeito.id}!")
+        await ctx.send(f"Você retirou {amount} qBits de {sujeito.name}!")
+        return
     
     collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": 25})
     await ctx.send(f"{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
