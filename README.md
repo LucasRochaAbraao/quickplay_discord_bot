@@ -42,52 +42,41 @@ python -m pip install --upgrade pip
 Depois mais alguns passos para ligar o bot e fazer um deployment automático...
 
 >Clone o repo
-
+```
 pip install requirements.txt
+```
 
 >Crie uma conta no discord e siga a documentação oficial para:
-
+```
 Criar um bot
-
 Criar um servidor
-
 Vincular seu bot ao servidor
-
 https://discord.com/developers/docs/intro
-
+```
 
 >crie um arquivo ".env" no mesmo diretório que o "bot.py", contendo 2 variáveis:
-
+```
 DISCORD_TOKEN=219038129031290asdasduiashuidahsuidsad
-
 DB_URL=mongodb+srv://clustername:<password>-cluster-cl.server.mongodb.net/test
-
+```
 
 >Crie uma conta grátis no https://cloud.mongodb.com
-
+```
 Siga a documentação oficial para:
-
 Criar um cluster
-
 Criar uma database
-
 Criar uma collection
-
 No dashboard do mongodb é possível obter o url para conectar, que vai no arquivo ".env"
-
 https://docs.mongodb.com/
-
+```
 
 >Crie uma conta grátis no heroku
-
+```
 Crie uma nova aplicação no heroku
-
 Vincule sua conta no heroku com a do github, no menu "deploy"
-
 Acompanhe nos logs do heroku seu próximo commit
-
 Para sua aplicação executar automaticamente, habilite o "worker" no menu "Resources"
-
+```
 
 [python-image]: https://img.shields.io/static/v1?label=python&message=3.7&color=blue
 [python-url]: https://www.python.org/downloads/release/python-370/
