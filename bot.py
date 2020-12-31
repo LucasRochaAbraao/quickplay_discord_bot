@@ -30,56 +30,68 @@ meme_imgs = [
 @bot.group(invoke_without_command=True)
 async def ajuda(ctx):
     emb = discord.Embed(title = "Ajuda", description = "Use !ajuda <comando> para mais informações sobre algum comando específico.", color = ctx.author.color)
-    emb.add_field(name = "Membros", value = "regras|regra, info, saldo, brinde, enviar_qbits")
-    emb.add_field(name = "Admin", value = "limpar, kick, ban")
+    emb.add_field(name = "Membros", value = "regras|regra, info, brinde, enviar_qbits")
+    emb.add_field(name = "Admin", value = "limpar, kick, ban, depositar, retirar_qbits")
     await ctx.send(embed = emb)
 
 @ajuda.command()
 async def info(ctx):
-    emb = discord.Embed(title = "Info", description = "Mostra informações de um membro", color = ctx.author.color)
+    emb = discord.Embed(title = "Info", description = "Mostrar informações de um membro.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!info <membro>")
     await ctx.send(embed = emb)
 
 @ajuda.command()
 async def regras(ctx):
-    emb = discord.Embed(title = "Regras", description = "Mostra todas as regras do servidor.", color = ctx.author.color)
+    emb = discord.Embed(title = "Regras", description = "Mostrar todas as regras do servidor.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!regras")
     await ctx.send(embed = emb)
 
 @ajuda.command()
 async def regra(ctx):
-    emb = discord.Embed(title = "Regras", description = "Mostra a regra solicitada.", color = ctx.author.color)
+    emb = discord.Embed(title = "Regra", description = "Mostrar a regra solicitada.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!regra <nº da regra>")
     await ctx.send(embed = emb)
 
 @ajuda.command()
 async def limpar(ctx):
-    emb = discord.Embed(title = "Limpar", description = "Deleta mensagens recentes", color = ctx.author.color)
+    emb = discord.Embed(title = "Limpar", description = "[ADM] Deletar mensagens recentes.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!limpar [quantidade]")
     await ctx.send(embed = emb)
 
 @ajuda.command()
 async def kick(ctx):
-    emb = discord.Embed(title = "Kick", description = "Retira um membro do servidor", color = ctx.author.color)
+    emb = discord.Embed(title = "Kick", description = "[ADM] Retirar um membro do servidor.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!kick <membro> [razão]")
     await ctx.send(embed = emb)
 
 @ajuda.command()
 async def ban(ctx):
-    emb = discord.Embed(title = "Ban", description = "Banir um membro do servidor", color = ctx.author.color)
+    emb = discord.Embed(title = "Ban", description = "[ADM] Banir um membro do servidor.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!ban <membro> [razão]")
     await ctx.send(embed = emb)
 
 @ajuda.command()
-async def saldo(ctx):
-    emb = discord.Embed(title = "Saldo", description = "Consultar saldo de qBits de um usuário", color = ctx.author.color)
+async def brinde(ctx):
+    emb = discord.Embed(title = "Brinde", description = "Solicitar um brinde de qBits (entre 3 e 7 qBits).", color = ctx.author.color)
+    emb.add_field(name = "**sintaxe**", value = "!brinde [membro]")
+    await ctx.send(embed = emb)
+
+@ajuda.command()
+async def enviar_qbits(ctx):
+    emb = discord.Embed(title = "enviar_qbits", description = "Consultar saldo de qBits de um usuário.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!saldo [membro]")
     await ctx.send(embed = emb)
 
 @ajuda.command()
-async def brinde(ctx):
-    emb = discord.Embed(title = "Brinde", description = "Solicitar um brinde de qBits", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!saldo [membro]")
+async def depositar(ctx):
+    emb = discord.Embed(title = "depositar", description = "[ADM] Envia qualquer quantia de qBits para um membro.", color = ctx.author.color)
+    emb.add_field(name = "**sintaxe**", value = "!depositar <membro> <valor>")
+    await ctx.send(embed = emb)
+
+@ajuda.command()
+async def retirar_qbits(ctx):
+    emb = discord.Embed(title = "retirar_qbits", description = "[ADM] Retira qualquer quantia de qBits para um membro.", color = ctx.author.color)
+    emb.add_field(name = "**sintaxe**", value = "!retirar_qbits [membro] <valor>")
     await ctx.send(embed = emb)
 
 # =================================== EVENTS =================================== #
@@ -210,9 +222,8 @@ async def ban(ctx, member: discord.Member, *, reason = "Nenhum motivo foi provid
 
 # ===================== COMANDOS DE GERENCIAMENTO FINANCEIRO ==================== #
 
-
 @bot.command()
-@commands.has_role('Admin')
+#@commands.has_role('Admin')
 async def brinde(ctx, member: discord.Member = None):
     if member:
         sujeito = member
@@ -229,8 +240,7 @@ async def brinde(ctx, member: discord.Member = None):
 
 @bot.command()
 @commands.has_role('Admin')
-async def retirar_qbits(ctx, member: discord.Member = None, amount = None): # check if this works, otherwise cast to int
-    amount = int(amount)
+async def retirar_qbits(ctx, member: discord.Member = None, amount = None):
     if amount == None:
         await ctx.send("Por favor, selecione uma quantia.")
         return
@@ -239,6 +249,7 @@ async def retirar_qbits(ctx, member: discord.Member = None, amount = None): # ch
     else:
         sujeito = ctx.author
 
+    amount = int(amount)
     pesquisa = collection.find_one({"_id": sujeito.id})
     if pesquisa:
         if amount > pesquisa["qbits"]:
