@@ -224,7 +224,7 @@ async def retirar_qbits(ctx, member: discord.Member = None, amount = None): # ch
     pesquisa = collection.find_one({"_id": sujeito.id})
     if pesquisa:
         if amount > pesquisa["qbits"]:
-            await ctx.send("Você não tem o suficiente!")
+            await ctx.send(f"{sujeito.name} tem menos do que isso!")
             return
         if amount < 0:
             await ctx.send("Quantia precisa ser positiva!")
