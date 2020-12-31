@@ -119,6 +119,8 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_message(msg):
+    if msg.author == bot.user:
+        return
     await filtrar_palavras(msg)
     await processar_xp(msg)
 
