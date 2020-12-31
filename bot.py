@@ -211,7 +211,8 @@ async def brinde(ctx, member: discord.Member = None):
 
 @bot.command()
 @commands.has_role('Admin')
-async def retirar_qbits(ctx, member: discord.Member = None, amount: int = None): # check if this works, otherwise cast to int
+async def retirar_qbits(ctx, member: discord.Member = None, amount = None): # check if this works, otherwise cast to int
+    amount = int(amount)
     if amount == None:
         await ctx.send("Por favor, selecione uma quantia.")
         return
@@ -251,7 +252,7 @@ async def depositar(ctx, member: discord.Member = None, amount: int = None):
     pesquisa = collection.find_one({"_id": sujeito.id})
     if pesquisa:
         collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": amount}})
-        await ctx.send(f"Você depositou {amount} qBits para {sujeito.id}!")
+        await ctx.send(f"Você depositou {amount} qBits para {sujeito.name}!")
         return
     
     collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": 25})
@@ -259,6 +260,7 @@ async def depositar(ctx, member: discord.Member = None, amount: int = None):
 
 @bot.command()
 async def enviar_qbits(ctx, membro: discord.Member, amount = None):
+    amount = int(amount)
     if amount < 1 or amount == None:
         await ctx.send("Por favor, selecione uma quantia positiva para enviar!")
         return
