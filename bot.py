@@ -4,18 +4,22 @@ import random
 import datetime
 import discord
 from discord.ext import commands
+import pymongo
+from pymongo import MongoClient
 #from dotenv import load_dotenv
 
 #load_dotenv()
 #TOKEN = os.getenv('DISCORD_TOKEN')
 TOKEN = os.environ["DISCORD_TOKEN"]
 
+cluster = MongoClient(os.environ["DB_URL"])
+db = cluster['quickplay_db']
+collection = db["discord"]
+
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=('!', '$'), description="QuickPlay Bot", intents=intents, case_insensitive=True)
 bot.remove_command("help") # eu faço um melhor abaixo
-
-
 
 meme_imgs = [
     'https://img_a.jpg',
@@ -142,7 +146,7 @@ async def info(ctx, member: discord.Member = None):
 
     emb.add_field(name = "Membro desde", value = f"{sujeito.joined_at.strftime('%d-%m-%y')}")
     #emb.add_field(name = "ID", value = member.id, inline = False)
-    emb.add_field(name = "qBits", value = 0)
+    emb.add_field(name = "qBits", value = saldo_qbits(sujeito))
     emb.set_thumbnail(url = sujeito.avatar_url)
     emb.set_footer(text="QUICK PLAY", icon_url="http://www.quick.com.br//images/logo-quick.png")
     await ctx.send(embed=emb)
@@ -191,128 +195,95 @@ async def ban(ctx, member: discord.Member, *, reason = "Nenhum motivo foi provid
 
 # ===================== COMANDOS DE GERENCIAMENTO FINANCEIRO ==================== #
 
+
 @bot.command()
-async def saldo(ctx, membro: discord.Member = None):
-    if membro:
-        sujeito = membro
+@commands.has_role('Admin')
+async def brinde(ctx, member: discord.Member = None):
+    if member:
+        sujeito = member
     else:
         sujeito = ctx.author
-    await open_account(sujeito)
-    
-    clientes = await get_bank_data()
-    emb = discord.Embed(title = f"Conta de qBits de {sujeito}", color = discord.Color.blue())
-    emb.add_field(name = "Carteira", value = clientes[str(sujeito.id)]["carteira"])
-    emb.add_field(name = "Banco", value = clientes[str(sujeito.id)]["banco"])
-    
-    await ctx.send(embed = emb)
+    ganhos = random.randrange(3, 7)
+    pesquisa = collection.find_one({"_id": sujeito.id})
+    if pesquisa:
+        collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": ganhos}})
+    await ctx.send(f"{sujeito.name} recebeu {ganhos} qBits!")
 
 @bot.command()
-async def brinde(ctx):
-    await open_account(ctx.author)
-    users = await get_bank_data()
-    
-    ganhos = random.randrange(101)
-    users[str(ctx.author.id)]["carteira"] += ganhos
-    await save_bank_data(users)
-
-    await ctx.send(f"{ctx.author} recebeu {ganhos} qBits!")
-
-@bot.command()
-async def sacar(ctx, amount = None):
-    await open_account(ctx.author)
-    
+@commands.has_role('Admin')
+async def retirar_qbits(ctx, member: discord.Member = None, amount: int = None): # check if this works, otherwise cast to int
     if amount == None:
-        ctx.send("Por favor, selecione uma quantia.")
+        await ctx.send("Por favor, selecione uma quantia.")
         return
-    
-    bal = await update_bank(ctx.author)
-    amount = int(amount)
-    if amount > bal[1]:
-        await ctx.send("Você não tem o suficiente!")
-        return
-    if amount < 0:
-        await ctx.send("Quantia precisa ser positiva!")
-        return
+    if member:
+        sujeito = member
+    else:
+        sujeito = ctx.author
 
-    await update_bank(ctx.author, amount)
-    await update_bank(ctx.author, -1 * amount, "banco")
-    await ctx.send(f"Você sacou {amount} qBits!")
+    pesquisa = collection.find_one({"_id": sujeito.id})
+    if pesquisa:
+        if amount > pesquisa["qbits"]:
+            await ctx.send("Você não tem o suficiente!")
+            return
+        if amount < 0:
+            await ctx.send("Quantia precisa ser positiva!")
+            return
+        collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": -amount}})
+        await ctx.send(f"Você retirou {amount} qBits de {sujeito.id}!")
+    
+    collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": 25})
+    await ctx.send(f"{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
 
 @bot.command()
-async def depositar(ctx, amount = None):
-    await open_account(ctx.author)
-    
+@commands.has_role('Admin')
+async def depositar(ctx, member: discord.Member = None, amount: int = None):
     if amount == None:
-        ctx.send("Por favor, selecione uma quantia.")
+        await ctx.send("Por favor, selecione uma quantia.")
         return
-    
-    bal = await update_bank(ctx.author)
-    amount = int(amount)
-    if amount > bal[0]:
-        await ctx.send("Você não tem o suficiente!")
+    if amount < 1:
+        await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
         return
-    if amount < 0:
-        await ctx.send("Quantia precisa ser positiva!")
-        return
+    if member:
+        sujeito = member
+    else:
+        sujeito = ctx.author
 
-    await update_bank(ctx.author, -1 * amount)
-    await update_bank(ctx.author, amount, "banco")
-    await ctx.send(f"Você depositou {amount} qBits!")
+    pesquisa = collection.find_one({"_id": sujeito.id})
+    if pesquisa:
+        collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": amount}})
+        await ctx.send(f"Você depositou {amount} qBits para {sujeito.id}!")
+    
+    collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": 25})
+    await ctx.send(f"{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
 
 @bot.command()
 async def enviar_qbits(ctx, membro: discord.Member, amount = None):
-    await open_account(ctx.author)
-    await open_account(membro)
-    
-    if amount == None:
-        ctx.send("Por favor, selecione uma quantia.")
+    if amount < 1 or amount == None:
+        await ctx.send("Por favor, selecione uma quantia positiva para enviar!")
         return
-    
-    bal = await update_bank(ctx.author)
-    amount = int(amount)
-    if amount > bal[1]:
-        await ctx.send("Você não tem o suficiente!")
-        return
-    if amount < 0:
-        await ctx.send("Quantia precisa ser positiva!")
-        return
+    remetente = collection.find_one({"_id": ctx.author.id})
+    if remetente == None:
+        collection.insert_one({"_id": ctx.author.id}, {"$inc": {"qbits": amount}})
+    destinatario = collection.find_one({"_id": membro.id})
+    if destinatario == None:
+        collection.insert_one({"_id": membro.id}, {"$inc": {"qbits": amount}})
 
-    await update_bank(ctx.author, -1 * amount, "banco")
-    await update_bank(membro, amount, "banco")
-    await ctx.send(f"Você enviou {amount} qBits para {membro.name}!")
-
+    if amount > remetente["qbits"]:
+        await ctx.send(f"Você não tem saldo suficiente para enviar {amount} qbits!")
+        return
+    
+    collection.update_one({"_id": c.id}, {"$inc": {"qbits": -amount}})
+    collection.update_one({"_id": destinatario.id}, {"$inc": {"qbits": amount}})
+    await ctx.send(f"{ctx.author.name} enviou {amount} qBits para {membro.name}!")
 
 # ----- funções internas ----- #
-async def open_account(client):
-    clients = await get_bank_data()
-    
-    if str(client.id) in clients:
-        return False # não precisa criar carteiras novas, já é cliente
-    else:
-        clients[str(client.id)] = {}
-        clients[str(client.id)]["carteira"] = 0
-        clients[str(client.id)]["banco"] = 0
-    
-    await save_bank_data(clients)
-    return True
 
-async def get_bank_data():
-    with open("resources/banco/banco.json", "r") as arq:
-        clients = json.load(arq)
-    return clients
-
-async def save_bank_data(clients):
-    with open("resources/banco/banco.json", "w") as arq:
-        json.dump(clients, arq)
-    return True
-
-async def update_bank(client, change = 0, mode = "carteira"):
-    clients = await get_bank_data()
-    clients[str(client.id)][mode] += change
-    await save_bank_data(clients)
-    bal = [clients[str(client.id)]["carteira"], clients[str(client.id)]["banco"]]
-
-    return bal
+async def saldo_qbits(membro: discord.Member):
+    pesquisa = collection.find_one({"_id": membro.id})
+    if pesquisa: # caso o usuario exista, retorna o valor de qbits
+        return pesquisa["qbits"]
+    collection.insert_one({"_id": membro.id, "xp": 0, "qbits": 25})
+    return 25 # caso contrário, insira o usuário na mongodb e retorna o valor inicial.
 
 # ========================= COMANDOS EM DESENVOLVIMENTO ========================= #
 
@@ -560,4 +531,25 @@ async def unmute(ctx, *, member : discord.Member):
     await bot.edit_channel_permissions(ctx.message.channel, member, overwrite)
 
     await bot.say(f"**{member.mention}** Pronto... Foi retirado do silêncio!")
+
+######################################## MONGODB QUICK CHEATSHEET ######################################
+import pymongo
+from pymongo import MongoClient
+
+cluster = MongoClient("mongodb+srv://quickplay:N0cqu1cK22@quickplay-discordbot-cl.pm3fu.mongodb.net/test")
+
+db = cluster['quickplay_db']
+
+collection = db['discord']
+
+usuario = {"_id": "12345", "xp": 0, "qbits": 25}
+
+usuario_id = collection.insert_one(usuario).inserted_id
+
+pesquisa = collection.find_one({"_id": usuario_id})
+
+novo = 7
+collection.update_one({"_id": usuario_id}, {"$inc": {"qbits": novo}})
+
+
 """
