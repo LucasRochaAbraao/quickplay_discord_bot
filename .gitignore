@@ -4,5 +4,5 @@ venv/
 quickplay_sqlite.db
 quickplay_sqlite.db-journal
 resources/banco/*
-!resources/.gitkeep
+!resources/banco/.gitkeep
 manage_db.py
