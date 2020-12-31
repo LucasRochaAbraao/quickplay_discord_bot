@@ -29,7 +29,7 @@ meme_imgs = [
 
 @bot.group(invoke_without_command=True)
 async def ajuda(ctx):
-    emb = discord.Embed(title = "Ajuda", description = "Use !ajuda <comando> para mais informações sobre algum comando específico.", color = ctx.author.color)
+    emb = discord.Embed(title = "Ajuda", description = "Use !ajuda <comando> para mais informações sobre algum comando específico.\nOBS: <obrigatório> e [opcional]", color = ctx.author.color)
     emb.add_field(name = "Membros", value = "regras|regra, info, brinde, enviar_qbits")
     emb.add_field(name = "Admin", value = "limpar, kick, ban, depositar, retirar_qbits")
     await ctx.send(embed = emb)
@@ -72,19 +72,19 @@ async def ban(ctx):
 
 @ajuda.command()
 async def brinde(ctx):
-    emb = discord.Embed(title = "Brinde", description = "Solicitar um brinde de qBits (entre 3 e 7 qBits).", color = ctx.author.color)
+    emb = discord.Embed(title = "Brinde", description = "Solicitar um brinde de qBits (aleatório entre 3 e 7 qBits).", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!brinde [membro]")
     await ctx.send(embed = emb)
 
 @ajuda.command()
 async def enviar_qbits(ctx):
-    emb = discord.Embed(title = "enviar_qbits", description = "Consultar saldo de qBits de um usuário.", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!saldo [membro]")
+    emb = discord.Embed(title = "enviar_qbits", description = "Transferência de qBits da sua conta para outro membro.", color = ctx.author.color)
+    emb.add_field(name = "**sintaxe**", value = "!enviar_qbits <membro> <valor>")
     await ctx.send(embed = emb)
 
 @ajuda.command()
 async def depositar(ctx):
-    emb = discord.Embed(title = "depositar", description = "[ADM] Envia qualquer quantia de qBits para um membro.", color = ctx.author.color)
+    emb = discord.Embed(title = "depositar", description = "[ADM] Deposita qualquer quantia de qBits para um membro.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!depositar <membro> <valor>")
     await ctx.send(embed = emb)
 
@@ -182,7 +182,9 @@ async def info(ctx, member: discord.Member = None):
 
 @bot.command()
 async def regra(ctx, *, num):
-    regras_txt = get_regras()
+    regras_txt, qnt = get_regras(1)
+    if num > qnt:
+        await ctx.send(f"Nós temos apenas {qnt} regras por enquanto...")
     await ctx.send(regras_txt[int(num)-1])
 
 @bot.command()
@@ -192,9 +194,11 @@ async def regras(ctx):
         await ctx.send(reg)
 
 # ----- funções internas ----- #
-def get_regras():
+def get_regras(qnt=None):
     with open("resources/regras.txt", "r") as arq:
         regras_txt = arq.readlines()
+    if qnt:
+        return regrs_txt, len(regras_txt)
     return regras_txt
 
 # =============================== COMANDOS ADMIN ================================ #
