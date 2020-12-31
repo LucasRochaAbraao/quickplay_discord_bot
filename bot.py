@@ -78,19 +78,19 @@ async def brinde(ctx):
 
 @ajuda.command()
 async def enviar_qbits(ctx):
-    emb = discord.Embed(title = "enviar_qbits", description = "Transferência de qBits da sua conta para outro membro.", color = ctx.author.color)
+    emb = discord.Embed(title = "Enviar_qbits", description = "Transferência de qBits da sua conta para outro membro.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!enviar_qbits <membro> <valor>")
     await ctx.send(embed = emb)
 
 @ajuda.command()
 async def depositar(ctx):
-    emb = discord.Embed(title = "depositar", description = "[ADM] Deposita qualquer quantia de qBits para um membro.", color = ctx.author.color)
+    emb = discord.Embed(title = "Depositar", description = "[ADM] Deposita qualquer quantia de qBits para um membro.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!depositar <membro> <valor>")
     await ctx.send(embed = emb)
 
 @ajuda.command()
 async def retirar_qbits(ctx):
-    emb = discord.Embed(title = "retirar_qbits", description = "[ADM] Retira qualquer quantia de qBits para um membro.", color = ctx.author.color)
+    emb = discord.Embed(title = "Retirar_qbits", description = "[ADM] Retira qualquer quantia de qBits para um membro.", color = ctx.author.color)
     emb.add_field(name = "**sintaxe**", value = "!retirar_qbits [membro] <valor>")
     await ctx.send(embed = emb)
 
