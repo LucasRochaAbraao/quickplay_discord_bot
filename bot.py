@@ -283,7 +283,7 @@ async def saldo_qbits_xp(membro: discord.Member, modo):
     pesquisa = collection.find_one({"_id": membro.id})
     if pesquisa: # caso o usuario exista, retorna o valor de qbits
         return pesquisa[modo]
-    collection.insert_one({"_id": sujeito.id, "username": sujeito.name, "xp": 0, "qbits": 25})
+    collection.insert_one({"_id": membro.id, "username": membro.name, "xp": 0, "qbits": 25})
     if modo == "xp":
         return 0
     else: # qbits padrão
