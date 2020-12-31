@@ -145,8 +145,8 @@ async def info(ctx, member: discord.Member = None):
     )
 
     emb.add_field(name = "Membro desde", value = f"{sujeito.joined_at.strftime('%d-%m-%y')}")
-    #emb.add_field(name = "ID", value = member.id, inline = False)
-    emb.add_field(name = "qBits", value = await saldo_qbits(sujeito))
+    emb.add_field(name = "XP", value = await saldo_qbits_xp(sujeito, "xp"))
+    emb.add_field(name = "qBits", value = await saldo_qbits_xp(sujeito, "qbits"))
     emb.set_thumbnail(url = sujeito.avatar_url)
     emb.set_footer(text="QUICK PLAY", icon_url="http://www.quick.com.br//images/logo-quick.png")
     await ctx.send(embed=emb)
@@ -245,10 +245,11 @@ async def depositar(ctx, member: discord.Member = None, amount: int = None):
     if amount < 1:
         await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
         return
-    if member:
+    if member and isinstance(member, discord.Member):
         sujeito = member
     else:
         sujeito = ctx.author
+        amount = member # cambalaio para permitir: !depositar 100 (para usuário solicitando)
 
     pesquisa = collection.find_one({"_id": sujeito.id})
     if pesquisa:
@@ -256,8 +257,8 @@ async def depositar(ctx, member: discord.Member = None, amount: int = None):
         await ctx.send(f"Você depositou {amount} qBits para @{sujeito.name}!")
         return
     
-    collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": 25})
-    await ctx.send(f"@{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
+    collection.insert_one({"_id": sujeito.id, "xp": 0, "qbits": amount})
+    await ctx.send(f"@{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com {amount} qbits!")
 
 @bot.command()
 async def enviar_qbits(ctx, membro: discord.Member, amount = None):
@@ -282,12 +283,15 @@ async def enviar_qbits(ctx, membro: discord.Member, amount = None):
 
 # ----- funções internas ----- #
 
-async def saldo_qbits(membro: discord.Member):
+async def saldo_qbits_xp(membro: discord.Member, modo):
     pesquisa = collection.find_one({"_id": membro.id})
     if pesquisa: # caso o usuario exista, retorna o valor de qbits
-        return pesquisa["qbits"]
+        return pesquisa[modo]
     collection.insert_one({"_id": membro.id, "xp": 0, "qbits": 25})
-    return 25 # caso contrário, insira o usuário na mongodb e retorna o valor inicial.
+    if modo == "xp":
+        return 0
+    else: # qbits padrão
+        return 25 # caso contrário, insira o usuário na mongodb e retorna o valor inicial.
 
 # ========================= COMANDOS EM DESENVOLVIMENTO ========================= #
 
