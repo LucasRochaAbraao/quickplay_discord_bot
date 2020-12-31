@@ -46,6 +46,7 @@ Depois mais alguns passos para ligar o bot e fazer um deployment automático...
 pip install requirements.txt
 ```
 
+
 >Crie uma conta no discord e siga a documentação oficial para:
 ```
 Criar um bot
@@ -54,11 +55,13 @@ Vincular seu bot ao servidor
 https://discord.com/developers/docs/intro
 ```
 
+
 >crie um arquivo ".env" no mesmo diretório que o "bot.py", contendo 2 variáveis:
 ```
 DISCORD_TOKEN=219038129031290asdasduiashuidahsuidsad
 DB_URL=mongodb+srv://clustername:<password>-cluster-cl.server.mongodb.net/test
 ```
+
 
 >Crie uma conta grátis no https://cloud.mongodb.com
 ```
@@ -69,6 +72,7 @@ Criar uma collection
 No dashboard do mongodb é possível obter o url para conectar, que vai no arquivo ".env"
 https://docs.mongodb.com/
 ```
+
 
 >Crie uma conta grátis no heroku
 ```
