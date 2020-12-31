@@ -245,8 +245,9 @@ async def depositar(ctx, member: discord.Member = None, amount: int = None):
     if amount < 1:
         await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
         return
-    if member and isinstance(member, discord.Member):
-        sujeito = member
+    if member:
+        if isinstance(member, discord.Member):
+            sujeito = member
     else:
         sujeito = ctx.author
         amount = member # cambalaio para permitir: !depositar 100 (para usuário solicitando)
