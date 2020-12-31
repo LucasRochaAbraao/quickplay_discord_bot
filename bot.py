@@ -241,29 +241,20 @@ async def retirar_qbits(ctx, member: discord.Member = None, amount = None): # ch
 
 @bot.command()
 @commands.has_role('Admin')
-async def depositar(ctx, member: discord.Member = None, amount = None):
-    if type(amount) == str:
-        ctx.send(f"if>member: {member}, amount: {amount}")
-        sujeito = member
-    else:
-        ctx.send(f"else>member: {member}, amount: {amount}")
-        amount = int(member) # cambalaio para permitir: !depositar 100 (para usuário solicitando)
-        sujeito = ctx.author
-    if amount < 1:
-        await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
-        return
+async def depositar(ctx, member: discord.Member = None, amount: int = None):
     if amount == None:
         await ctx.send("Por favor, selecione uma quantia.")
         return
-    ctx.send(f"3rd>member: {member}, amount: {amount}")
-    pesquisa = collection.find_one({"_id": sujeito.id})
-    if pesquisa:
-        collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": amount}})
-        await ctx.send(f"Você depositou {amount} qBits para @{sujeito.name}!")
+    if amount < 1:
+        await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
         return
-    
-    collection.insert_one({"_id": sujeito.id, "username": sujeito.name, "xp": 0, "qbits": amount})
-    await ctx.send(f"@{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com {amount} qbits!")
+    pesquisa = collection.find_one({"_id": member.id})
+    if pesquisa:
+        collection.update_one({"_id": member.id}, {"$inc": {"qbits": amount}})
+        await ctx.send(f"@{member.name} recebeu {amount} qBits!")
+    else:
+        collection.insert_one({"_id": member.id, "username": member.name, "xp": 0, "qbits": amount})
+        await ctx.send(f"@{member.name} não possuía conta no banco. Acabamos de criar uma nova, com {amount} qbits!")
 
 @bot.command()
 async def enviar_qbits(ctx, membro: discord.Member, amount = None):
@@ -292,7 +283,7 @@ async def saldo_qbits_xp(membro: discord.Member, modo):
     pesquisa = collection.find_one({"_id": membro.id})
     if pesquisa: # caso o usuario exista, retorna o valor de qbits
         return pesquisa[modo]
-    collection.insert_one({"_id": membro.id, "username": membro.name, "xp": 0, "qbits": 25})
+    collection.insert_one({"_id": membro.id, "username": sujeito.name, "xp": 0, "qbits": 25})
     if modo == "xp":
         return 0
     else: # qbits padrão
