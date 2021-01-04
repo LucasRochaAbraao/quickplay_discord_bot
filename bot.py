@@ -29,6 +29,7 @@ collection = db["discord"]
 
 intents = discord.Intents.default()
 intents.members = True
+intents.messages = True
 bot = commands.Bot(command_prefix=('!', '$'), description="QuickPlay Bot", intents=intents, case_insensitive=True)
 bot.remove_command("help") # eu faço um melhor abaixo
 
@@ -138,10 +139,9 @@ async def on_message(msg):
 @bot.event
 async def on_message_delete(msg):
     ''' Mensagem no canal ao detectar uma mensagem deletada.'''
-    #print(f"peguei: {msg.author}> {msg.content}") #debug no console, ainda não testei
-    print(f"{msg.author}")
+    print(f"{msg.author.name} apagou: {msg.content}") #debug no console, ainda não testei
     # futuramente, caso seja necessário, posso criar um log com mensagens deletadas (autor, data, etc)
-    #await msg.channel.send('Deus leu o que você apagou!')
+    await msg.channel.send(content=f"@{msg.author.name}", file=discord.File("resources/msg_on_delete.png"))
 
 @bot.event
 async def on_member_join(member):
