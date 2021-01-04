@@ -193,7 +193,7 @@ async def info(ctx, member: discord.Member = None):
 @bot.command()
 async def regra(ctx, *, num):
     regras_txt, qnt = get_regras(1)
-    if num > qnt:
+    if int(num) > qnt:
         await ctx.send(f"Nós temos apenas {qnt} regras por enquanto...")
     await ctx.send(regras_txt[int(num)-1])
 
