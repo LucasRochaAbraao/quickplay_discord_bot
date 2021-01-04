@@ -208,7 +208,7 @@ def get_regras(qnt=None):
     with open("resources/regras.txt", "r") as arq:
         regras_txt = arq.readlines()
     if qnt:
-        return regra_txt, len(regras_txt)
+        return regras_txt, len(regras_txt)
     return regras_txt
 
 # =============================== COMANDOS ADMIN ================================ #
