@@ -8,6 +8,9 @@
 
 Nesse repositório vocẽ encontra informações de instalação, comandos do bot, além de ter acesso ao código fonte, que inclui uma licença open source pra copiar (desde que use a mesma licença no seu projeto)
 
+Venha conhecer o servidor!
+https://discord.gg/erknM3JwMr
+
 <remove me> ![](../header.png)
 ## Índice
 
