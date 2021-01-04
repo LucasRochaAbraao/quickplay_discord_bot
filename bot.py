@@ -195,6 +195,7 @@ async def regra(ctx, *, num):
     regras_txt, qnt = get_regras(1)
     if int(num) > qnt:
         await ctx.send(f"Nós temos apenas {qnt} regras por enquanto...")
+        return
     await ctx.send(regras_txt[int(num)-1])
 
 @bot.command()
