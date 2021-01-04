@@ -6,10 +6,21 @@ import discord
 from discord.ext import commands
 import pymongo
 from pymongo import MongoClient
-#from dotenv import load_dotenv
 
-#load_dotenv()
-#TOKEN = os.getenv('DISCORD_TOKEN')
+
+# TODO:
+# - para adicionar novo comando;
+#   - lógica com @bot.command
+#   - adicionar o sintaxe no @ajuda.command()
+#   - Colocar no README.md
+#
+# - comandos em desenvolvimento:
+#   - ranking de qBits
+#   - 
+#
+# - restruturar código adicionando cogs.
+#
+
 TOKEN = os.environ["DISCORD_TOKEN"]
 
 cluster = MongoClient(os.environ["DB_URL"])
@@ -98,8 +109,6 @@ async def retirar_qbits(ctx):
 
 @bot.event
 async def on_ready():
-    #print(f'{bot.user.name} se conectou ao servidor {dir(bot.user)}!')
-    #print(f'{bot.user.name}:{bot.user.id} se conectou ao servidor!')
     print(f'{bot.user.name} se conectou ao servidor!')
     return await bot.change_presence(activity=discord.Activity(type=1, name='Quick Play', url='https://www.youtube.com/channel/UCNaWl0HNSmDk4fO8NQBii4Q'))
 
@@ -129,7 +138,8 @@ async def on_message(msg):
 @bot.event
 async def on_message_delete(msg):
     ''' Mensagem no canal ao detectar uma mensagem deletada.'''
-    #print("peguei") #debug no console
+    #print(f"peguei: {msg.author}> {msg.content}") #debug no console, ainda não testei
+    print(f"{msg.author}")
     # futuramente, caso seja necessário, posso criar um log com mensagens deletadas (autor, data, etc)
     #await msg.channel.send('Deus leu o que você apagou!')
 
