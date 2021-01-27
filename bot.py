@@ -20,6 +20,13 @@ from pymongo import MongoClient
 #
 # - restruturar código adicionando cogs.
 #
+# - Assign roles through emoji
+#
+# - member poster
+#   - member of the month
+#   - tournament champs
+#   - 
+#
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 
@@ -148,6 +155,50 @@ async def on_member_join(member):
     ''' Mensagem de boas vindas privada.'''
     #print(dir(member))
     await member.send('Olá! Seja bem vindo ao servidor discord Quick Play!')# Fique atento para instruções no processo de inscrição do primeiro campeonato Quick Play de LOL!')
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    message_id = payload.message_id
+    if message_id == 804046006579625984: # specific message in the server
+        guild_id = payload.guild_id
+        guild = discord.utils.find(lambda g : g.id == guild_id, bot.guilds) # this guild only
+
+        if payload.emoji.name == 'some_emoji': # only if role != emoji name
+            role = discord.utils.get(guild.roles, name="actual_name")
+        else:
+            role = discord.utils.get(guild.roles, name=payload.emoji.name)
+        
+        if role is not None:
+            member = discord.utils.find(lambda m : m.id == payload.user_id, guild.members)
+            if member is not None:
+                await member.add_roles(role)
+                print(f"Added {role} role to {member.name}")
+            else:
+                print(f"Member {member.name} not found.")
+        else:
+            print(f"Role {role} not found.")
+
+@bot.event
+async def on_raw_reaction_remove(payload):
+    message_id = payload.message_id
+    if message_id == 804046006579625984: # specific message in the server
+        guild_id = payload.guild_id
+        guild = discord.utils.find(lambda g : g.id == guild_id, bot.guilds) # this guild only
+
+        if payload.emoji.name == 'some_emoji': # only if role != emoji name
+            role = discord.utils.get(guild.roles, name="actual_name")
+        else:
+            role = discord.utils.get(guild.roles, name=payload.emoji.name)
+        
+        if role is not None:
+            member = discord.utils.find(lambda m : m.id == payload.user_id, guild.members)
+            if member is not None:
+                await member.remove_roles(role)
+                print(f"Removed {role} role from {member.name}")
+            else:
+                print(f"Member {member.name} not found.")
+        else:
+            print(f"Role {role} not found.")
 
 # ==== helper funcions ==== #
 async def filtrar_palavras(msg):
