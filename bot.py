@@ -154,13 +154,12 @@ async def on_message_delete(msg):
 async def on_member_join(member):
     ''' Mensagem de boas vindas privada.'''
     #print(dir(member))
-    await member.send('Olá! Seja bem vindo ao servidor discord Quick Play!')# Fique atento para instruções no processo de inscrição do primeiro campeonato Quick Play de LOL!')
+    await member.send('Olá! Seja bem vindo ao servidor discord Quick Play!')
 
 @bot.event
 async def on_raw_reaction_add(payload):
     message_id = payload.message_id
-    print(payload.message_id)
-    if message_id == 274571533492551680: # specific message in the server
+    if message_id == 804046030562918440: # specific message in the server
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g : g.id == guild_id, bot.guilds) # this guild only
 
@@ -182,7 +181,7 @@ async def on_raw_reaction_add(payload):
 @bot.event
 async def on_raw_reaction_remove(payload):
     message_id = payload.message_id
-    if message_id == 274571533492551680: # specific message in the server
+    if message_id == 804046030562918440: # specific message in the server
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g : g.id == guild_id, bot.guilds) # this guild only
 
