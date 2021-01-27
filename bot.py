@@ -159,6 +159,7 @@ async def on_member_join(member):
 @bot.event
 async def on_raw_reaction_add(payload):
     message_id = payload.message_id
+    print(payload.message_id)
     if message_id == 274571533492551680: # specific message in the server
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g : g.id == guild_id, bot.guilds) # this guild only
