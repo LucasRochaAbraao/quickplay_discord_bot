@@ -1,391 +1,42 @@
 import os
-import json
-import random
-import datetime
+import traceback
 import discord
 from discord.ext import commands
-import pymongo
-from pymongo import MongoClient
-
 
 # TODO:
 # - para adicionar novo comando;
-#   - lógica com @bot.command
-#   - adicionar o sintaxe no @ajuda.command()
+#   - adicionar comando no cogs correto
+#   - lógica com @bcommands.command()
+#   - adicionar o sintaxe na cogs Ajuda
 #   - Colocar no README.md
 #
 # - comandos em desenvolvimento:
 #   - ranking de qBits
-#   - 
-#
-# - restruturar código adicionando cogs.
-#
-# - Assign roles through emoji
 #
 # - member poster
 #   - member of the month
 #   - tournament champs
-#   - 
-#
 
 TOKEN = os.environ["DISCORD_TOKEN"]
-
-cluster = MongoClient(os.environ["DB_URL"])
-db = cluster['quickplay_db']
-collection = db["discord"]
 
 intents = discord.Intents.default()
 intents.members = True
 intents.messages = True
 bot = commands.Bot(command_prefix=('!', '$'), description="QuickPlay Bot", intents=intents, case_insensitive=True)
-bot.remove_command("help") # eu faço um melhor abaixo
+bot.remove_command("help") # eu faço um melhor nos cogs
 
-meme_imgs = [
-    'https://img_a.jpg',
-    'https://img_b.jpg'
-    'https://img_c.jpg'
-]
-
-@bot.group(invoke_without_command=True)
-async def ajuda(ctx):
-    emb = discord.Embed(title = "Ajuda", description = "Use !ajuda <comando> para mais informações sobre algum comando específico.\nOBS: <obrigatório> e [opcional]", color = ctx.author.color)
-    emb.add_field(name = "Membros", value = "regras|regra, info, brinde, enviar_qbits")
-    emb.add_field(name = "Admin", value = "limpar, kick, ban, depositar, retirar_qbits")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def info(ctx):
-    emb = discord.Embed(title = "Info", description = "Mostrar informações de um membro.", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!info <membro>")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def regras(ctx):
-    emb = discord.Embed(title = "Regras", description = "Mostrar todas as regras do servidor.", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!regras")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def regra(ctx):
-    emb = discord.Embed(title = "Regra", description = "Mostrar a regra solicitada.", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!regra <nº da regra>")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def limpar(ctx):
-    emb = discord.Embed(title = "Limpar", description = "[ADM] Deletar mensagens recentes.", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!limpar [quantidade]")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def kick(ctx):
-    emb = discord.Embed(title = "Kick", description = "[ADM] Retirar um membro do servidor.", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!kick <membro> [razão]")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def ban(ctx):
-    emb = discord.Embed(title = "Ban", description = "[ADM] Banir um membro do servidor.", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!ban <membro> [razão]")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def brinde(ctx):
-    emb = discord.Embed(title = "Brinde", description = "Solicitar um brinde de qBits (aleatório entre 3 e 7 qBits).", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!brinde [membro]")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def enviar_qbits(ctx):
-    emb = discord.Embed(title = "Enviar_qbits", description = "Transferência de qBits da sua conta para outro membro.", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!enviar_qbits <membro> <valor>")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def depositar(ctx):
-    emb = discord.Embed(title = "Depositar", description = "[ADM] Deposita qualquer quantia de qBits para um membro.", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!depositar <membro> <valor>")
-    await ctx.send(embed = emb)
-
-@ajuda.command()
-async def retirar_qbits(ctx):
-    emb = discord.Embed(title = "Retirar_qbits", description = "[ADM] Retira qualquer quantia de qBits para um membro.", color = ctx.author.color)
-    emb.add_field(name = "**sintaxe**", value = "!retirar_qbits [membro] <valor>")
-    await ctx.send(embed = emb)
-
-# =================================== EVENTS =================================== #
-
-@bot.event
-async def on_ready():
-    print(f'{bot.user.name} se conectou ao servidor!')
-    return await bot.change_presence(activity=discord.Activity(type=1, name='Quick Play', url='https://www.youtube.com/channel/UCNaWl0HNSmDk4fO8NQBii4Q'))
-
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.MissingPermissions):
-        await ctx.send("Você não tem permissão para isso espertinho!")
-        #await ctx.message.delete()
-    elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("Por favor, coloque todos parâmetros")
-        #await ctx.message.delete()
-    elif isinstance(error, commands.CommandNotFound):
-        await ctx.send("Não entendi esse comando :/")
-        #await ctx.message.delete()
-    else:
-        raise error
-
-@bot.event
-async def on_message(msg):
-    if msg.author == bot.user:
-        return
-    await filtrar_palavras(msg)
-    await processar_xp(msg)
-
-    await bot.process_commands(msg)
-
-@bot.event
-async def on_message_delete(msg):
-    ''' Mensagem no canal ao detectar uma mensagem deletada.'''
-    print(f"{msg.author.name} apagou: {msg.content}") #debug no console, ainda não testei
-    # futuramente, caso seja necessário, posso criar um log com mensagens deletadas (autor, data, etc)
-    await msg.channel.send(content=f"@{msg.author.name}", file=discord.File("resources/msg_on_delete.png"))
-
-@bot.event
-async def on_member_join(member):
-    ''' Mensagem de boas vindas privada.'''
-    #print(dir(member))
-    await member.send('Olá! Seja bem vindo ao servidor discord Quick Play!')
-
-@bot.event
-async def on_raw_reaction_add(payload):
-    message_id = payload.message_id
-    if message_id == 804046030562918440: # specific message in the server
-        guild_id = payload.guild_id
-        guild = discord.utils.find(lambda g : g.id == guild_id, bot.guilds) # this guild only
-
-        if payload.emoji.name == 'some_emoji': # only if role != emoji name
-            role = discord.utils.get(guild.roles, name="actual_name")
-        else:
-            role = discord.utils.get(guild.roles, name=payload.emoji.name)
-        
-        if role is not None:
-            member = discord.utils.find(lambda m : m.id == payload.user_id, guild.members)
-            if member is not None:
-                await member.add_roles(role)
-                print(f"Added {role} role to {member.name}")
-            else:
-                print(f"Member {member.name} not found.")
-        else:
-            print(f"Role {role} not found.")
-
-@bot.event
-async def on_raw_reaction_remove(payload):
-    message_id = payload.message_id
-    if message_id == 804046030562918440: # specific message in the server
-        guild_id = payload.guild_id
-        guild = discord.utils.find(lambda g : g.id == guild_id, bot.guilds) # this guild only
-
-        if payload.emoji.name == 'some_emoji': # only if role != emoji name
-            role = discord.utils.get(guild.roles, name="actual_name")
-        else:
-            role = discord.utils.get(guild.roles, name=payload.emoji.name)
-        
-        if role is not None:
-            member = discord.utils.find(lambda m : m.id == payload.user_id, guild.members)
-            if member is not None:
-                await member.remove_roles(role)
-                print(f"Removed {role} role from {member.name}")
-            else:
-                print(f"Member {member.name} not found.")
-        else:
-            print(f"Role {role} not found.")
-
-# ==== helper funcions ==== #
-async def filtrar_palavras(msg):
-    with open("resources/palavras_filtradas.txt", "r") as arq:
-        palavras_filtradas = arq.readlines()
-        for word in palavras_filtradas:
-            if word in msg.content:
-                await msg.delete()
-
-async def processar_xp(msg):
-    sujeito = msg.author
-    pesquisa = collection.find_one({"_id": sujeito.id})
-    if pesquisa:
-        collection.update_one({"_id": sujeito.id}, {"$inc": {"xp": random.randrange(3, 5)}})
-    else:
-        collection.insert_one({"_id": sujeito.id, "username": sujeito.name, "xp": 0, "qbits": 25})
-
-# =============================== COMANDOS COMUNS =============================== #
-
-@bot.command(aliases=["usuario", "perfil"], help='Exibir um cartão (embed) com \
-informações do usuário, incluindo sua carteira virtual com moedas q-bits.')
-#@commands.has_permissions(kick_members = True) # caso seja necessário
-async def info(ctx, member: discord.Member = None):
-    if member:
-        sujeito = member
-    else:
-        sujeito = ctx.author
-    
-    emb = discord.Embed(
-        title = sujeito.name,
-        timestamp = datetime.datetime.utcnow(),
-        description = sujeito.mention,
-        color = discord.Color.orange()
-    )
-
-    emb.add_field(name = "Membro desde", value = f"{sujeito.joined_at.strftime('%d-%m-%y')}")
-    emb.add_field(name = "XP", value = await saldo_qbits_xp(sujeito, "xp"))
-    emb.add_field(name = "qBits", value = await saldo_qbits_xp(sujeito, "qbits"))
-    emb.set_thumbnail(url = sujeito.avatar_url)
-    emb.set_footer(text="QUICK PLAY", icon_url="http://www.quick.com.br//images/logo-quick.png")
-    await ctx.send(embed=emb)
-
-@bot.command()
-async def regra(ctx, *, num):
-    regras_txt, qnt = get_regras(1)
-    if int(num) > qnt:
-        await ctx.send(f"Nós temos apenas {qnt} regras por enquanto...")
-        return
-    await ctx.send(regras_txt[int(num)-1])
-
-@bot.command()
-async def regras(ctx):
-    regras_txt = get_regras()
-    for reg in regras_txt:
-        await ctx.send(reg)
-
-# ----- funções internas ----- #
-def get_regras(qnt=None):
-    with open("resources/regras.txt", "r") as arq:
-        regras_txt = arq.readlines()
-    if qnt:
-        return regras_txt, len(regras_txt)
-    return regras_txt
-
-# =============================== COMANDOS ADMIN ================================ #
-
-@bot.command(name='limpar', aliases=["clear"], no_pm=True)
-#@commands.has_permissions(manage_messages = True)
-@commands.has_role('Admin')
-async def limpar(ctx, amount=None):
-    if amount is None:
-        await ctx.channel.purge(limit=6)
-    elif amount == "todas":
-        await ctx.channel.purge()
-    else:
-        await ctx.channel.purge(limit=int(amount)+1)
-
-@bot.command(aliases=["retirar"])
-@commands.has_permissions(kick_members = True)
-async def kick(ctx, member: discord.Member, *, reason = "Nenhum motivo foi providenciado"):
-    await member.send(f"Você foi retirado pelo motivo:\n{reason}")
-    await member.kick(reason=reason)
-
-@bot.command(aliases=["banir"])
-@commands.has_permissions(ban_members = True)
-async def ban(ctx, member: discord.Member, *, reason = "Nenhum motivo foi providenciado"):
-    await member.send(f"{member.name} foi banido pelo motivo:\n{reason}")
-    await member.ban(reason=reason)
-
-# ===================== COMANDOS DE GERENCIAMENTO FINANCEIRO ==================== #
-
-@bot.command()
-#@commands.has_role('Admin')
-async def brinde(ctx, member: discord.Member = None):
-    if member:
-        sujeito = member
-    else:
-        sujeito = ctx.author
-    ganhos = random.randrange(3, 7)
-    pesquisa = collection.find_one({"_id": sujeito.id})
-    if pesquisa:
-        collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": ganhos}})
-        await ctx.send(f"@{sujeito.name} recebeu {ganhos} qBits!")
-    else:
-        collection.insert_one({"_id": sujeito.id, "username": sujeito.name, "xp": 0, "qbits": 25})
-        await ctx.send(f"@{sujeito.name} não tinha conta qBits. Criamos uma para ele, e agora ele tem {ganhos} qBits!")
-
-@bot.command()
-@commands.has_role('Admin')
-async def retirar_qbits(ctx, member: discord.Member = None, amount = None):
-    if amount == None:
-        await ctx.send("Por favor, selecione uma quantia.")
-        return
-    if member:
-        sujeito = member
-    else:
-        sujeito = ctx.author
-
-    amount = int(amount)
-    pesquisa = collection.find_one({"_id": sujeito.id})
-    if pesquisa:
-        if amount > pesquisa["qbits"]:
-            await ctx.send(f"@{sujeito.name} tem menos do que isso!")
-            return
-        if amount < 0:
-            await ctx.send("Quantia precisa ser positiva!")
-            return
-        collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": -amount}})
-        await ctx.send(f"Você retirou {amount} qBits de @{sujeito.name}!")
-        return
-    
-    collection.insert_one({"_id": sujeito.id, "username": sujeito.name, "xp": 0, "qbits": 25})
-    await ctx.send(f"@{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com 25 qbits!")
-
-@bot.command()
-@commands.has_role('Admin')
-async def depositar(ctx, member: discord.Member = None, amount: int = None):
-    if amount == None:
-        await ctx.send("Por favor, selecione uma quantia.")
-        return
-    if amount < 1:
-        await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
-        return
-    pesquisa = collection.find_one({"_id": member.id})
-    if pesquisa:
-        collection.update_one({"_id": member.id}, {"$inc": {"qbits": amount}})
-        await ctx.send(f"@{member.name} recebeu {amount} qBits!")
-    else:
-        collection.insert_one({"_id": member.id, "username": member.name, "xp": 0, "qbits": amount})
-        await ctx.send(f"@{member.name} não possuía conta no banco. Acabamos de criar uma nova, com {amount} qbits!")
-
-@bot.command()
-async def enviar_qbits(ctx, membro: discord.Member, amount = None):
-    amount = int(amount)
-    if amount < 1 or amount == None:
-        await ctx.send("Por favor, selecione uma quantia positiva para enviar!")
-        return
-    remetente = collection.find_one({"_id": ctx.author.id})
-    if remetente == None:
-        collection.insert_one({"_id": ctx.author.id, "username": ctx.author.name, "xp": 0, "qbits": amount})
-    destinatario = collection.find_one({"_id": membro.id})
-    if destinatario == None:
-        collection.insert_one({"_id": membro.id, "username": membro.name, "xp": 0, "qbits": amount})
-
-    if amount > remetente["qbits"]:
-        await ctx.send(f"Você não tem saldo suficiente para enviar {amount} qbits!")
-        return
-    
-    collection.update_one({"_id": ctx.author.id}, {"$inc": {"qbits": -amount}})
-    collection.update_one({"_id": membro.id}, {"$inc": {"qbits": amount}})
-    await ctx.send(f"@{ctx.author.name} enviou {amount} qBits para @{membro.name}!")
-
-# ----- funções internas ----- #
-
-async def saldo_qbits_xp(membro: discord.Member, modo):
-    pesquisa = collection.find_one({"_id": membro.id})
-    if pesquisa: # caso o usuario exista, retorna o valor de qbits
-        return pesquisa[modo]
-    collection.insert_one({"_id": membro.id, "username": membro.name, "xp": 0, "qbits": 25})
-    if modo == "xp":
-        return 0
-    else: # qbits padrão
-        return 25 # caso contrário, insira o usuário na mongodb e retorna o valor inicial.
-
-# ========================= COMANDOS EM DESENVOLVIMENTO ========================= #
+for extension in os.listdir("./cogs"):
+    if extension.endswith(".py"):
+        try:
+            bot.load_extension(f'cogs.{extension[:-3]}')
+            print(f"Loaded extension: {extension}")
+        except Exception as e:
+            print(f'Failed to load extension {extension}.')
+            traceback.print_exc()
 
 bot.run(TOKEN)
+
+# ========================= COMANDOS EM DESENVOLVIMENTO ========================= #
 
 """
 # por enquanto, não vejo necessidade disso, mais fácil fazer manual msm...
@@ -421,6 +72,7 @@ essa função liberada.')
 async def cor(ctx, cor_escolhida):
     await ctx.send(f"Nova cor do cartão: {cor_escolhida}")
 
+import random
 @bot.command(aliases=[""]) # esse veio do canal do swastik no youtube
 async def meme(ctx):
     emb = discord.Embed(color = discord.Color.red())
@@ -464,7 +116,7 @@ async def registrar(ctx):
     await ctx.author.send(f'Fala {ctx.author.name}, bora registrar sua equipe!\n\
 \n\
 Preciso que me envie a informação de cada jogador no seguinte formato:\n\
-!registrar_integrante "equipe" "nome real" "nickname" "data de nascimento" \
+---!registrar_integrante "equipe" "nome real" "nickname" "data de nascimento" \
 "endereço" "email" "telefone de contato"\n\
 \n\
 Por exemplo: "!registrar_player "equipe" "Quick Fibra" "QuickPlay" \
@@ -476,6 +128,8 @@ Por exemplo: "!registrar_player "equipe" "Quick Fibra" "QuickPlay" \
 # endereço
 # email
 # telefone de contato
+
+import json
 
 @bot.command(name='registrar_integrante', help='Inscriçao de cada integrante da equipe.')
 async def registrar_integrante(ctx, equipe, nome, nickname, dob, address, email, telefone):
@@ -629,25 +283,4 @@ async def unmute(ctx, *, member : discord.Member):
     await bot.edit_channel_permissions(ctx.message.channel, member, overwrite)
 
     await bot.say(f"**{member.mention}** Pronto... Foi retirado do silêncio!")
-
-######################################## MONGODB QUICK CHEATSHEET ######################################
-import pymongo
-from pymongo import MongoClient
-
-cluster = MongoClient("mongodb+srv://quickplay:N0cqu1cK22@quickplay-discordbot-cl.pm3fu.mongodb.net/test")
-
-db = cluster['quickplay_db']
-
-collection = db['discord']
-
-usuario = {"_id": "12345", "xp": 0, "qbits": 25}
-
-usuario_id = collection.insert_one(usuario).inserted_id
-
-pesquisa = collection.find_one({"_id": usuario_id})
-
-novo = 7
-collection.update_one({"_id": usuario_id}, {"$inc": {"qbits": novo}})
-
-
 """
