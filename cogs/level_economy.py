@@ -20,11 +20,8 @@ class LevelEconomyCog(commands.Cog, name='Nível e Economia'):
     @commands.command(aliases=["usuario", "perfil"], help='Exibir um cartão (embed) com \
     informações do usuário, incluindo sua carteira virtual com moedas q-bits.')
     async def info(self, ctx, member: discord.Member = None):
-        if member:
-            sujeito = member
-        else:
-            sujeito = ctx.author
-        
+        sujeito = member if member else ctx.author
+                
         emb = discord.Embed(
             title = sujeito.name,
             timestamp = datetime.datetime.utcnow(),
@@ -63,12 +60,10 @@ class LevelEconomyCog(commands.Cog, name='Nível e Economia'):
         if amount == None:
             await ctx.send("Por favor, selecione uma quantia.")
             return
-        if member:
-            sujeito = member
-        else:
-            sujeito = ctx.author
-
         amount = int(amount)
+        
+        sujeito = member if member else ctx.author
+
         pesquisa = self.collection.find_one({"_id": sujeito.id})
         if pesquisa:
             if amount > pesquisa["qbits"]:
@@ -93,20 +88,22 @@ class LevelEconomyCog(commands.Cog, name='Nível e Economia'):
         if amount < 1:
             await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
             return
+        
+        sujeito = member if member else ctx.member
         pesquisa = self.collection.find_one({"_id": member.id})
         if pesquisa:
-            self.collection.update_one({"_id": member.id}, {"$inc": {"qbits": amount}})
-            await ctx.send(f"@{member.name} recebeu {amount} qBits!")
+            self.collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": amount}})
+            await ctx.send(f"@{sujeito.name} recebeu {amount} qBits!")
         else:
-            self.collection.insert_one({"_id": member.id, "username": member.name, "xp": 0, "qbits": amount})
-            await ctx.send(f"@{member.name} não possuía conta no banco. Acabamos de criar uma nova, com {amount} qbits!")
+            self.collection.insert_one({"_id": sujeito.id, "username": sujeito.name, "xp": 0, "qbits": amount})
+            await ctx.send(f"@{sujeito.name} não possuía conta no banco. Acabamos de criar uma nova, com {amount} qbits!")
 
     @commands.command()
     async def enviar_qbits(self, ctx, membro: discord.Member, amount = None):
-        amount = int(amount)
         if amount < 1 or amount == None:
             await ctx.send("Por favor, selecione uma quantia positiva para enviar!")
             return
+        amount = int(amount)
         remetente = self.collection.find_one({"_id": ctx.author.id})
         if remetente == None:
             self.collection.insert_one({"_id": ctx.author.id, "username": ctx.author.name, "xp": 0, "qbits": amount})
