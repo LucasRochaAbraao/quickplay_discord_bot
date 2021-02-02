@@ -40,11 +40,7 @@ class LevelEconomyCog(commands.Cog, name='Nível e Economia'):
     #@commands.has_role('Admin')
     @commands.command()
     async def brinde(self, ctx, member: discord.Member = None):
-        print(self.collection)
-        if member:
-            sujeito = member
-        else:
-            sujeito = ctx.author
+        sujeito = member if member else ctx.author
         ganhos = random.randrange(3, 7)
         pesquisa = self.collection.find_one({"_id": sujeito.id})
         if pesquisa:
@@ -88,8 +84,8 @@ class LevelEconomyCog(commands.Cog, name='Nível e Economia'):
         if amount < 1:
             await ctx.send("Por favor, selecione uma quantia positiva para depositar!")
             return
-        
-        sujeito = member if member else ctx.member
+
+        sujeito = member if member else ctx.author
         pesquisa = self.collection.find_one({"_id": member.id})
         if pesquisa:
             self.collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": amount}})
