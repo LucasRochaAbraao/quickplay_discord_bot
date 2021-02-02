@@ -65,7 +65,7 @@ class HelpCog(commands.Cog, name = "Ajuda"):
     @ajuda.command(name="depositar")
     async def _depositar(self, ctx):
         emb = discord.Embed(title = "Depositar", description = "[ADM] Deposita qualquer quantia de qBits para um membro.", color = ctx.author.color)
-        emb.add_field(name = "**sintaxe**", value = "!depositar <membro> <valor>")
+        emb.add_field(name = "**sintaxe**", value = "!depositar <valor> <membro>")
         await ctx.send(embed = emb)
 
     @ajuda.command(name="retirar_qbits")

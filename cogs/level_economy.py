@@ -81,7 +81,7 @@ class LevelEconomyCog(commands.Cog, name='Nível e Economia'):
 
     @commands.command()
     @commands.has_role('Admin')
-    async def depositar(self, ctx, member: discord.Member = None, amount: int = None):
+    async def depositar(self, ctx, amount: int = None, member: discord.Member = None):
         if amount == None:
             await ctx.send("Por favor, selecione uma quantia.")
             return
