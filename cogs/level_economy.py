@@ -86,7 +86,7 @@ class LevelEconomyCog(commands.Cog, name='Nível e Economia'):
             return
 
         sujeito = member if member else ctx.author
-        pesquisa = self.collection.find_one({"_id": member.id})
+        pesquisa = self.collection.find_one({"_id": sujeito.id})
         if pesquisa:
             self.collection.update_one({"_id": sujeito.id}, {"$inc": {"qbits": amount}})
             await ctx.send(f"@{sujeito.name} recebeu {amount} qBits!")
