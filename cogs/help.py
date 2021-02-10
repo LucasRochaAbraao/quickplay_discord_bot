@@ -10,7 +10,7 @@ class HelpCog(commands.Cog, name = "Ajuda"):
     @commands.group(invoke_without_command=True)
     async def ajuda(self, ctx):
         emb = discord.Embed(title = "Ajuda", description = "Use !ajuda <comando> para mais informações sobre algum comando específico.\nOBS: <obrigatório> e [opcional]", color = ctx.author.color)
-        emb.add_field(name = "Membros", value = "regras|regra, info, brinde, enviar_qbits")
+        emb.add_field(name = "Membros", value = "regras|regra, info, registrar, brinde, enviar_qbits")
         emb.add_field(name = "Admin", value = "limpar, kick, ban, depositar, retirar_qbits")
         await ctx.send(embed = emb)
 
@@ -72,6 +72,12 @@ class HelpCog(commands.Cog, name = "Ajuda"):
     async def _retirar_qbits(self, ctx):
         emb = discord.Embed(title = "Retirar_qbits", description = "[ADM] Retira qualquer quantia de qBits para um membro.", color = ctx.author.color)
         emb.add_field(name = "**sintaxe**", value = "!retirar_qbits [membro] <valor>")
+        await ctx.send(embed = emb)
+    
+    @ajuda.command(name="registrar")
+    async def _registrar(self, ctx):
+        emb = discord.Embed(title = "Registrar", description = "O bot informa um link para inscrição do próximo campeonato!.", color = ctx.author.color)
+        emb.add_field(name = "**sintaxe**", value = "!depositar")
         await ctx.send(embed = emb)
 
 def setup(bot):
