@@ -23,10 +23,10 @@ class EventsCog(commands.Cog, name = "Eventos"):
             await ctx.send("Você não tem permissão para isso espertinho!")
             #await ctx.message.delete()
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Por favor, coloque todos parâmetros")
+            await ctx.send("Por favor, coloque todos parâmetros.")
             #await ctx.message.delete()
         elif isinstance(error, commands.CommandNotFound):
-            await ctx.send("Não entendi esse comando :/")
+            await ctx.send("Não entendi esse comando. :/\n!ajuda para comandos disponíveis.")
             #await ctx.message.delete()
         else:
             raise error
