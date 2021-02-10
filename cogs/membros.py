@@ -8,6 +8,11 @@ class MembroCog(commands.Cog, name = "Membros"):
 
     def __init__(self, bot):
         self.bot = bot
+    
+    @commands.command()
+    async def registrar(self, ctx):
+        link = "https://www.sympla.com.br/campeonato-freefire-quickplay__1127737"
+        await ctx.send(f"Faça sua inscrição no campeonato FREE FIRE do QUICK PLAY no link abaixo!\n{link}")
 
     @commands.command()
     async def regra(self, ctx, *, num):
