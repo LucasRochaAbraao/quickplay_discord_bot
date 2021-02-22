@@ -1,7 +1,11 @@
 import os
 import traceback
+
 import discord
 from discord.ext import commands
+
+import pymongo
+from pymongo import MongoClient
 
 # TODO:
 # - para adicionar novo comando;
@@ -24,6 +28,11 @@ intents.members = True
 intents.messages = True
 bot = commands.Bot(command_prefix=('!', '$'), description="QuickPlay Bot", intents=intents, case_insensitive=True)
 bot.remove_command("help") # eu faço um melhor nos cogs
+
+bot.cluster = MongoClient(os.environ["DB_URL"])
+bot.db = bot.cluster['quickplay_db']
+bot.collection = bot.db["discord"]
+print(bot.collection)
 
 for extension in os.listdir("./cogs"):
     if extension.endswith(".py"):

@@ -109,11 +109,8 @@ class EventsCog(commands.Cog, name = "Eventos"):
                 if word in msg.content:
                     await msg.delete()
 
-    #Antes de cogs e ficava tudo em 1 arquivo, essa função tinha acesso ao mongodb
     async def processar_xp(self, msg):
-        economy = self.bot.get_cog('Nível e Economia')
-        if economy is not None:
-            coll = economy.collection
+        coll = self.bot.collection
         sujeito = msg.author
         pesquisa = coll.find_one({"_id": sujeito.id})
         if pesquisa:
