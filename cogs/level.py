@@ -26,7 +26,7 @@ class LevelCog(commands.Cog, name='Level'):
         emb = discord.Embed(title = "TOP 5",
         description = "5 membros com maior número de XP no servidor. Ganhe xp interagindo no servidor!",
         color = discord.Color.blue())
-        for rank, membro in enumerate(dados_ordenados[:10]):
+        for rank, membro in enumerate(dados_ordenados[:5]):
             emb.add_field(name = f"{rank+1}º {membro['username']}", value = f"{membro['xp']} xp")
         await ctx.send(embed = emb)
 
