@@ -22,7 +22,9 @@ class LevelCog(commands.Cog, name='Level'):
 
         dados_ordenados = sorted(dados_iniciais, key=lambda ordenar_by_xp: ordenar_by_xp['xp'])
         dados_ordenados.reverse() # a lista anterior é de menor pra maior
-        await ctx.send(f"Os 10 primeiros são...\n{dados_ordenados[:10]}")
+
+        dados_finais = [f"{dados['username']} {dados['xp']}\n" for dados in dados_ordenados[:10]]
+        await ctx.send(f"Os 10 primeiros são...\n{dados_finais}")
 
     # ----- funções internas ----- #
 
