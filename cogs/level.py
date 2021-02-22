@@ -23,9 +23,9 @@ class LevelCog(commands.Cog, name='Level'):
         dados_ordenados = sorted(dados_iniciais, key=lambda ordenar_by_xp: ordenar_by_xp['xp'])
         dados_ordenados.reverse() # a lista anterior é de menor pra maior
 
-        emb = discord.Embed(title = "TOP 10", description = "10 membros com maior número de XP no servidor.", color = discord.Color.blue())
-        for membro in dados_ordenados:
-            emb.add_field(name = membro['username'], value = membro['xp'])
+        emb = discord.Embed(title = "TOP 5", description = "5 membros com maior número de XP no servidor.", color = discord.Color.blue())
+        for rank, membro in enumerate(dados_ordenados[:10]):
+            emb.add_field(name = f"{rank+1}º {membro['username']}", value = membro['xp'])
         await ctx.send(embed = emb)
 
     # ----- funções internas ----- #
