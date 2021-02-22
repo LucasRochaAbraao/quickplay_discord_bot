@@ -11,7 +11,7 @@ class HelpCog(commands.Cog, name = "Ajuda"):
     informações dos comandos de ajuda.')
     async def ajuda(self, ctx):
         emb = discord.Embed(title = "Ajuda", description = "Use !ajuda <comando> para mais informações sobre algum comando específico.\nOBS: <obrigatório> e [opcional]", color = ctx.author.color)
-        emb.add_field(name = "Membros", value = "regras|regra, info, registrar, brinde, enviar_qbits")
+        emb.add_field(name = "Membros", value = "regras|regra, info, registrar, brinde, enviar_qbits, ranking")
         emb.add_field(name = "Admin", value = "limpar, kick, ban, depositar, retirar_qbits")
         await ctx.send(embed = emb)
 
@@ -19,6 +19,12 @@ class HelpCog(commands.Cog, name = "Ajuda"):
     async def _info(self, ctx):
         emb = discord.Embed(title = "Info", description = "Mostrar suas informações ou de um membro.", color = ctx.author.color)
         emb.add_field(name = "**sintaxe**", value = "!info [membro]")
+        await ctx.send(embed = emb)
+    
+    @ajuda.command(name="ranking")
+    async def _ranking(self, ctx):
+        emb = discord.Embed(title = "Info", description = "Mostra os membros com mais XP. Ganhe XP interagindo no servidor!.", color = ctx.author.color)
+        emb.add_field(name = "**sintaxe**", value = "!ranking")
         await ctx.send(embed = emb)
 
     @ajuda.command(name="regras")

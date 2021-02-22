@@ -22,6 +22,7 @@ https://discord.gg/erknM3JwMr
 |    Comando   |    Sintaxe    |   Descrição   |
 |     :---     |     :---:     |     :---:     |
 | Info | !info <membro> | Mostrar informações de um membro. |
+| Ranking | !ranking | Mostra os membros com mais XP. Ganhe XP interagindo no servidor! |
 | Regras | !regras | Mostrar todas as regras do servidor. |
 | Regra | !regra <nº da regra> | Mostrar a regra solicitada. |
 | Limpar | !limpar [quantidade] | [ADM] Deletar mensagens recentes. |
