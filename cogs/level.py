@@ -11,6 +11,19 @@ class LevelCog(commands.Cog, name='Level'):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command()
+    async def ranking(self, ctx):
+
+        # coll.find() retorna tudo: {'_id': ..., 'username': '...', 'xp': ..., 'qbits': ...}
+        cursor = self.bot.collection.find()
+        dados_iniciais = list()
+        for dado in cursor:
+            dados_iniciais.append(dado)
+
+        dados_ordenados = sorted(dados_iniciais, key=lambda ordenar_by_xp: ordenar_by_xp['xp'])
+        dados_ordenados.reverse() # a lista anterior é de menor pra maior
+        await ctx.send(f"Os 10 primeiros são...\n{dados_ordenados[:10]}")
+
     # ----- funções internas ----- #
 
     async def saldo_qbits_xp(self, membro: discord.Member, modo):
@@ -48,3 +61,6 @@ novo = 7
 collection.update_one({"_id": usuario_id}, {"$inc": {"qbits": novo}})
 
 """
+
+DB_URL="mongodb+srv://quickplay:N0cqu1cK22@quickplay-discordbot-cl.pm3fu.mongodb.net/test"
+DISCORD_DB='quickplay_sqlite.db'
