@@ -6,9 +6,9 @@
 [![heroku-image]][heroku-url]
 [![mongodb-image]][mongodb-url]
 
-Nesse repositório vocẽ encontra informações de instalação, comandos do bot, além de ter acesso ao código fonte, que inclui uma licença open source pra copiar (desde que use a mesma licença no seu projeto)
+Nesse repositório você encontra informações de instalação, comandos do bot, além de ter acesso ao código fonte, que inclui uma licença open source para copiar (desde que use a mesma licença no seu projeto).
 
-Venha conhecer o servidor!
+Venha conhecer o servidor, participe de nossos campeonatos e concorra a prêmios!
 https://discord.gg/erknM3JwMr
 
 <remove me> ![](../header.png)
@@ -47,7 +47,7 @@ Depois mais alguns passos para ligar o bot e fazer um deployment automático...
 
 >Clone o repo
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 
