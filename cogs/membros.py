@@ -31,7 +31,7 @@ class MembroCog(commands.Cog, name = "Membros"):
     @commands.command()
     async def registrar(self, ctx):
         link = "https://www.sympla.com.br/campeonato-quick-play-free-fire__1184130"
-        await ctx.send(f"Faça sua inscrição no campeonato FREE FIRE do QUICK PLAY no link abaixo!\n{link}")
+        await ctx.send(f"Faça sua inscrição no campeonato FREE FIRE do QUICK PLAY (ABRIL 2021) no link abaixo!\n{link}")
         #await ctx.send("Aguarde a definição do próximo campeonato...")
 
     @commands.command()
