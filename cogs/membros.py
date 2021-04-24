@@ -45,6 +45,7 @@ class MembroCog(commands.Cog, name = "Membros"):
     @commands.command()
     async def regras(self, ctx):
         regras_txt = self.get_regras()
+        print(regras_txt)
         for reg in regras_txt:
             await ctx.send(reg)
 
