@@ -1,2 +1,7 @@
-1 - Regra número um.
-2 - Regra número dois.
+1 - O jogador que for pego usando programas que deixem os oponentes em desvantagem, tais como: scripts, APK, MACRO, HACK, etc, será imediatamente desclassificado do torneio.
+2 - O time que for pego se aliando a outro para obter vantagem de qualquer gênero, será desclassifico.
+3 - Comportamentos inadequados, como: ofensas, coações, ameaças, preconceito, discórdia e tumulto implicará em penalidade de 20 pontos para a equipe agressora, e caso aconteça novamente, a equipe será desclassificada do torneio. Fica a critério dos organizadores desclassificar imediatamente em casos mais sérios.
+4 - Todas as armas e veículos serão permitidos.
+5 - O jogador deve tirar um print da tela final da partida para fins de prova de quantidade de abates e colocação, podendo ou não ser solicitada pelo moderador.
+6 - Caso as equipes descumpram as regras acima, as salas não serão refeitas. Vamos seguir rigorosamente as regras pessoal.
+7 - É proibido obter vantagem através de bugs dentro do jogo. Ex: Bug de render e gelo.
