@@ -46,7 +46,7 @@ class MembroCog(commands.Cog, name = "Membros"):
     async def regras(self, ctx):
         regras_txt = self.get_regras()
         print(regras_txt)
-        for reg in regras_txt:
+        for reg in regras_txt[0]:
             await ctx.send(reg)
 
     # ----- funções internas ----- #
